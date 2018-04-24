@@ -10,3 +10,7 @@
 .body-container .btn {
     margin:2px;
 }
+
+.disabled {
+    opacity:0.4;
+}

@@ -15,11 +15,16 @@
         </thead>
         <tbody>
         {% for session in sessions %}
-            <tr>
-                <td>{{ session.name }}</td>
+            <tr {% if not session.enabled %}class="disabled"{% endif %}>
+                <td>
+                    {{ session.name }}
+                    {% if not session.enabled %}
+                    (disabled)
+                    {% endif %}
+                </td>
                 <td>{{ session.dateCreation ? session.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
-                    <a class="btn btn-primary" href="{{ path('session_show', {'id': session.id}) }}">Show</a>
+                    <a class="btn btn-primary" href="{{ path('sequence_index', {'session': session.id}) }}">{{ session.sequences|length }} sequence(s)</a>
                     <a class="btn btn-info" href="{{ path('session_edit', {'id': session.id}) }}">Edit</a>
                 </td>
             </tr>

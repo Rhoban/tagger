@@ -6,7 +6,9 @@
     <h1>Edit Session</h1>
     <a href="{{ path('session_index') }}">&laquo; back to list</a>
 
+    <hr/>
     {{ include('session/_form.html.twig', {'button_label': 'Update'}) }}
+    <hr/>
 
     {{ include('session/_delete_form.html.twig') }}
 {% endblock %}

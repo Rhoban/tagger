@@ -2,25 +2,25 @@
 
 namespace App\Form;
 
-use App\Entity\Session;
+use App\Entity\Sequence;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SessionType extends AbstractType
+class SequenceType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('name')
-            ->add('enabled')
+            ->add('session')
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Session::class,
+            'data_class' => Sequence::class,
         ]);
     }
 }

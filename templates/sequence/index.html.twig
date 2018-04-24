@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sequences{% endblock %}
+
+{% block body %}
+    <h1>Sequences for session "{{ session.name }}"</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>DateCreation</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for sequence in sequences %}
+            <tr>
+                <td>{{ sequence.name }}</td>
+                <td>{{ sequence.dateCreation ? sequence.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a class="btn btn-primary" href="{{ path('sequence_show', {'session': session.id, 'id': sequence.id}) }}">show</a>
+                    <a class="btn btn-info" href="{{ path('sequence_edit', {'session': session.id, 'id': sequence.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('sequence_new', {'session': session.id}) }}">Create new</a>
+{% endblock %}

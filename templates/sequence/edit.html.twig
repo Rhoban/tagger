@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Sequence{% endblock %}
+
+{% block body %}
+    <h1>Edit Sequence</h1>
+
+    {{ include('sequence/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('sequence_index', {'session': sequence.session.id}) }}">back to list</a>
+
+    {{ include('sequence/_delete_form.html.twig') }}
+{% endblock %}
