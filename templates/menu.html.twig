@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="{{ path('home') }}">RhobanTag</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      {% set _route = app.request.get('_route') %}
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item {% if _route == 'home' %}active{% endif %}">
+            <a class="nav-link" href="{{ path('home') }}">
+                Home
+            </a>
+          </li>
+          {% if not app.user %}
+          <li class="nav-item {% if _route == 'fos_user_registration_register' %}active{% endif %}">
+              <a class="nav-link" href="{{ path('fos_user_registration_register') }}">
+                  Register
+              </a>
+          </li>
+          {% endif %}
+          <li class="nav-item">
+
+          </li>
+        </ul>
+
+      </div>
+
+      {% if app.user %}
+        <form class="form-inline">
+            <span class="navbar-text">
+                Logged as {{ app.user }}&nbsp;
+            </span>
+            <a href="{{ path('fos_user_security_logout') }}" class="btn btn-danger">
+                Logout
+            </a>
+        </form>
+      {% else %}
+        <form class="form-inline login-form" method="post" action="{{ path('fos_user_security_check') }}">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
+            <input class="form-control mr-sm-2" type="text" placeholder="login" name="_username">
+            <input class="form-control mr-sm-2" type="password" placeholder="password" name="_password">
+            <button class="btn btn-primary my-2 my-sm-0" type="submit">Login</button>
+        </form>
+      {% endif %}
+  </div>
+</nav>
