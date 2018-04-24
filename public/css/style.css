@@ -6,3 +6,7 @@
 .login-form input {
     width:140px !important;
 }
+
+.body-container .btn {
+    margin:2px;
+}
