@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -32,9 +34,21 @@ class Sequence
      */
     private $session;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $enabled;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Patch", mappedBy="sequence", orphanRemoval=true)
+     */
+    private $patches;
+
     public function __construct()
     {
+        $this->enabled = true;
         $this->dateCreation = new \DateTime;
+        $this->patches = new ArrayCollection();
     }
 
     public function getId()
@@ -81,5 +95,48 @@ class Sequence
     public function __toString(): string
     {
         return $this->getName();
+    }
+
+    public function getEnabled(): ?bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): self
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Patch[]
+     */
+    public function getPatches(): Collection
+    {
+        return $this->patches;
+    }
+
+    public function addPatch(Patch $patch): self
+    {
+        if (!$this->patches->contains($patch)) {
+            $this->patches[] = $patch;
+            $patch->setSequence($this);
+        }
+
+        return $this;
+    }
+
+    public function removePatch(Patch $patch): self
+    {
+        if ($this->patches->contains($patch)) {
+            $this->patches->removeElement($patch);
+            // set the owning side to null (unless already changed)
+            if ($patch->getSequence() === $this) {
+                $patch->setSequence(null);
+            }
+        }
+
+        return $this;
     }
 }

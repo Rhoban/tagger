@@ -1,4 +1,7 @@
 {
+    "alchemy/zippy": {
+        "version": "0.4.9"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {

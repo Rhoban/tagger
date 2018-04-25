@@ -4,10 +4,11 @@
 
 {% block body %}
     <h1>Edit Sequence</h1>
+    <a href="{{ path('sequence_index', {'session': sequence.session.id}) }}">&laquo; back to list</a>
 
     {{ include('sequence/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('sequence_index', {'session': sequence.session.id}) }}">back to list</a>
-
+    <hr/>
+    
     {{ include('sequence/_delete_form.html.twig') }}
 {% endblock %}

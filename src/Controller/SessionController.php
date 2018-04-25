@@ -9,6 +9,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\Session\Session as SfSession;
 
 /**
  * @Route("/session")
@@ -86,5 +89,26 @@ class SessionController extends Controller
         }
 
         return $this->redirectToRoute('session_index');
+    }
+
+    /**
+     * @Route("/{id}/upload", name="session_upload")
+     */
+    public function upload(Request $request, Session $session, SfSession $sess): Response
+    {
+        $builder = $this->createFormBuilder();
+        $sess->set('fileId', uniqid());
+
+        $form = $builder->getForm();
+        $form
+            
+            ->add('archive', FileType::class)
+            ->add('Upload', SubmitType::class)
+        ;
+
+        return $this->render('session/upload.html.twig', [
+            'session' => $session,
+            'form' => $form->createView()
+        ]);
     }
 }
