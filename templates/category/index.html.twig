@@ -9,6 +9,7 @@
         <thead>
             <tr>
                 <th>Name</th>
+                <th>Patches</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -16,8 +17,10 @@
         {% for category in categories %}
             <tr>
                 <td>{{ category.name }}</td>
+                <th>{{ category.patches }}</th>
                 <td>
-                    <a class="btn btn-info" href="{{ path('category_edit', {'id': category.id}) }}">edit</a>
+                    <a class="btn btn-info" href="{{ path('category_edit', {'id': category.id}) }}">Edit</a>
+                    {{ include('category/_delete_form.html.twig') }}
                 </td>
             </tr>
         {% else %}

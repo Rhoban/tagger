@@ -86,13 +86,14 @@ class SequenceController extends Controller
     public function delete(Request $request, Session $session, Sequence $sequence): Response
     {
         if ($this->isCsrfTokenValid('delete'.$sequence->getId(), $request->request->get('_token'))) {
+            $sequence->unlinkPatches();
             $em = $this->getDoctrine()->getManager();
             $em->remove($sequence);
             $em->flush();
         }
 
         return $this->redirectToRoute('sequence_index', [
-            'session' => $session
+            'session' => $session->getId()
         ]);
     }
 }

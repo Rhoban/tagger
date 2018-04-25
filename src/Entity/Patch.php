@@ -23,7 +23,7 @@ class Patch
     private $sequence;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="patches")
      * @ORM\JoinColumn(nullable=false)
      */
     private $category;
@@ -65,6 +65,11 @@ class Patch
     public function getFilename(): ?string
     {
         return $this->filename;
+    }
+
+    public function getFullFilename(): string
+    {
+        return WEB_DIRECTORY.'/'.$this->getFilename();
     }
 
     public function setFilename(string $filename): self

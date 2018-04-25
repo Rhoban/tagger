@@ -14,3 +14,18 @@
 .disabled {
     opacity:0.4;
 }
+
+.upload-progress {
+    display:none;
+    line-height: 0.8;
+    height:50px;
+    font-size:120%;
+}
+
+.progress-bar {
+    height:100%;
+}
+
+.table form {
+    display: inline;
+}

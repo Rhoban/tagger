@@ -19,6 +19,18 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
+    public function getCategories()
+    {
+        $em = $this->getEntityManager();
+        $stmt = $em->getConnection()->prepare(
+            'SELECT category.*, (SELECT COUNT(*) FROM patch WHERE category_id = category.id) as patches
+            FROM category'
+        );
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
 //    /**
 //     * @return Category[] Returns an array of Category objects
 //     */

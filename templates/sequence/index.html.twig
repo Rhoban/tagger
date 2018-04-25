@@ -9,7 +9,8 @@
         <thead>
             <tr>
                 <th>Name</th>
-                <th>DateCreation</th>
+                <th>Creation date</th>
+                <th>Patches</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -24,8 +25,12 @@
                 </td>
                 <td>{{ sequence.dateCreation ? sequence.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
-                    <a class="btn btn-primary" href="{{ path('sequence_show', {'session': session.id, 'id': sequence.id}) }}">show</a>
-                    <a class="btn btn-info" href="{{ path('sequence_edit', {'session': session.id, 'id': sequence.id}) }}">edit</a>
+                    {{ sequence.patches|length }}
+                </td>
+                <td>
+                    <a class="btn btn-primary" href="{{ path('sequence_show', {'session': session.id, 'id': sequence.id}) }}">Show</a>
+                    <a class="btn btn-info" href="{{ path('sequence_edit', {'session': session.id, 'id': sequence.id}) }}">Edit</a>
+                    {{ include('sequence/_delete_form.html.twig') }}
                 </td>
             </tr>
         {% else %}

@@ -20,7 +20,8 @@ class CategoryController extends Controller
      */
     public function index(CategoryRepository $categoryRepository): Response
     {
-        return $this->render('category/index.html.twig', ['categories' => $categoryRepository->findAll()]);
+        $categories = $categoryRepository->getCategories();
+        return $this->render('category/index.html.twig', ['categories' => $categories]);
     }
 
     /**
@@ -80,6 +81,8 @@ class CategoryController extends Controller
     public function delete(Request $request, Category $category): Response
     {
         if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->request->get('_token'))) {
+            $category->unlinkPatches();
+
             $em = $this->getDoctrine()->getManager();
             $em->remove($category);
             $em->flush();

@@ -5,6 +5,50 @@
 {% block body %}
 <h1>Upload to session "{{ session }}"</h1>
 
-{{ form(form) }}
+<div class="progress upload-progress">
+  <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 0%">
+      <span>0%</span>
+  </div>
+</div>
+<hr/>
+
+{% if badArchive %}
+<div class="alert alert-danger">
+    Error: can't open the archive file (is it a valid ZIP archive?)
+</div>
+{% endif %}
+
+{% if importError %}
+<div class="alert alert-danger">
+    Error during import: {{ importError }}
+</div>
+{% endif %}
+
+{% if imported is not same as(null) %}
+{% if imported %}
+<div class="alert alert-success">
+    Imported {{ imported|length }} sequences:
+<ul>
+{% for sequence in imported %}
+<li>Imported sequence {{ sequence }} with {{ sequence.patches|length }} patches</li>
+{% endfor %}
+</div>
+{% else %}
+<div class="alert alert-warning">
+    Nothing was imported, check your ZIP file format
+</div>
+{% endif %}
+{% endif %}
+
+<div class="upload-form">
+    {{ form_start(form) }}
+    <input type="hidden" name="{{ progress_name }}" value="{{ token }}" />
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+</div>
+
+<script>
+    var session_upload_progress = "{{ path('session_upload_progress', {'token': token}) }}";
+</script>
 
 {% endblock %}

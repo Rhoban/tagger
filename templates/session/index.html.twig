@@ -29,6 +29,7 @@
                     <a class="btn btn-warning" href="{{ path('session_upload', {'id': session.id}) }}">
                         Upload
                     </a>
+                    {{ include('session/_delete_form.html.twig') }}
                 </td>
             </tr>
         {% else %}

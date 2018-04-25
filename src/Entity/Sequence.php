@@ -139,4 +139,25 @@ class Sequence
 
         return $this;
     }
+
+    public function unlinkPatches()
+    {
+        foreach ($this->getPatches() as $patch) {
+            unlink($patch->getFullFilename());
+        }
+    }
+
+    public function getPatchesByCategory()
+    {
+        $patches = [];
+        foreach ($this->getPatches() as $patch) {
+            $category = $patch->getCategory()->getName();
+            if (!isset($patches[$category])) {
+                $patches[$category] = [];
+            }
+            $patches[$category][] = $patch;
+        }
+
+        return $patches;
+    }
 }
