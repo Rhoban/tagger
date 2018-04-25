@@ -27,7 +27,7 @@
 {% if imported is not same as(null) %}
 {% if imported %}
 <div class="alert alert-success">
-    Imported {{ imported|length }} sequences:
+    Imported <a href="{{ path('sequence_index', {'session': session.id}) }}">{{ imported|length }} sequences</a>:
 <ul>
 {% for sequence in imported %}
 <li>Imported sequence {{ sequence }} with {{ sequence.patches|length }} patches</li>

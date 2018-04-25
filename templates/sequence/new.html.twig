@@ -4,8 +4,8 @@
 
 {% block body %}
     <h1>Create new Sequence</h1>
+    <a href="{{ path('sequence_index', {'session': session.id}) }}">&laquo; back to list</a>
 
     {{ include('sequence/_form.html.twig') }}
 
-    <a href="{{ path('sequence_index', {'session': session.id}) }}">back to list</a>
 {% endblock %}
