@@ -8,7 +8,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Name</th>
+                <th class="large-td">Name</th>
                 <th>Creation date</th>
                 <th>actions</th>
             </tr>
@@ -16,20 +16,29 @@
         <tbody>
         {% for session in sessions %}
             <tr {% if not session.enabled %}class="disabled"{% endif %}>
-                <td>
+                <td class="large-td">
                     {{ session.name }}
                     {% if not session.enabled %}
                     (disabled)
                     {% endif %}
                 </td>
                 <td>{{ session.dateCreation ? session.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a class="btn btn-primary" href="{{ path('sequence_index', {'session': session.id}) }}">{{ session.sequences|length }} sequence(s)</a>
-                    <a class="btn btn-info" href="{{ path('session_edit', {'id': session.id}) }}">Edit</a>
-                    <a class="btn btn-warning" href="{{ path('session_upload', {'id': session.id}) }}">
-                        Upload
-                    </a>
-                    {{ include('session/_delete_form.html.twig') }}
+                <td class="actions">
+                    <div>
+                        <a class="btn btn-primary" href="{{ path('sequence_index', {'session': session.id}) }}">{{ session.sequences|length }} sequence(s)</a>
+                        <a class="btn btn-info" href="{{ path('session_edit', {'id': session.id}) }}">Edit</a>
+                        <a class="btn btn-warning" href="{{ path('session_upload', {'id': session.id}) }}">
+                            Upload
+                        </a>
+                        {{ include('session/_delete_form.html.twig') }}
+                        <a class="btn btn-info" href="{{ path('session_toggle', {'id': session.id}) }}">
+                            {% if session.enabled %}
+                            Disable
+                            {% else %}
+                            Enable
+                            {% endif %}
+                        </a>
+                    </div>
                 </td>
             </tr>
         {% else %}

@@ -35,18 +35,12 @@ class Sequence
     private $session;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    private $enabled;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Patch", mappedBy="sequence", orphanRemoval=true)
      */
     private $patches;
 
     public function __construct()
     {
-        $this->enabled = true;
         $this->dateCreation = new \DateTime;
         $this->patches = new ArrayCollection();
     }
@@ -95,18 +89,6 @@ class Sequence
     public function __toString(): string
     {
         return $this->getName();
-    }
-
-    public function getEnabled(): ?bool
-    {
-        return $this->enabled;
-    }
-
-    public function setEnabled(bool $enabled): self
-    {
-        $this->enabled = $enabled;
-
-        return $this;
     }
 
     /**

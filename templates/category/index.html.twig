@@ -16,9 +16,11 @@
         <tbody>
         {% for category in categories %}
             <tr>
-                <td>{{ category.name }}</td>
-                <th>{{ category.patches }}</th>
                 <td>
+                    <kbd>{{ category.name }}</kbd>
+                </td>
+                <th>{{ category.patches }}</th>
+                <td class="actions">
                     <a class="btn btn-info" href="{{ path('category_edit', {'id': category.id}) }}">Edit</a>
                     {{ include('category/_delete_form.html.twig') }}
                 </td>

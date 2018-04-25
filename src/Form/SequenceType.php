@@ -14,7 +14,6 @@ class SequenceType extends AbstractType
         $builder
             ->add('name')
             ->add('session')
-            ->add('enabled')
         ;
     }
 

@@ -29,3 +29,8 @@
 .table form {
     display: inline;
 }
+
+.actions {
+    white-space: nowrap;
+    width:1%;
+}

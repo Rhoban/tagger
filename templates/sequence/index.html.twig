@@ -16,12 +16,9 @@
         </thead>
         <tbody>
         {% for sequence in sequences %}
-            <tr {% if not sequence.enabled %}class="disabled"{% endif %}>
+            <tr>
                 <td>
                     {{ sequence.name }}
-                    {% if not sequence.enabled %}
-                    (disabled)
-                    {% endif %}
                 </td>
                 <td>{{ sequence.dateCreation ? sequence.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
@@ -29,7 +26,7 @@
                 </td>
                 <td>
                     <a class="btn btn-primary" href="{{ path('sequence_show', {'session': session.id, 'id': sequence.id}) }}">Show</a>
-                    <a class="btn btn-info" href="{{ path('sequence_edit', {'session': session.id, 'id': sequence.id}) }}">Edit</a>
+                    <a class="btn btn-info" href="{{ path('sequence_edit', {'id': sequence.id}) }}">Edit</a>
                     {{ include('sequence/_delete_form.html.twig') }}
                 </td>
             </tr>

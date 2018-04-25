@@ -100,6 +100,18 @@ class SessionController extends Controller
         return $this->redirectToRoute('session_index');
     }
 
+    /**
+     * @Route("/{id}/toggle", name="session_toggle")
+     */
+    public function toggle(Request $request, Session $session): Response
+    {
+        $session->setEnabled(!$session->getEnabled());
+        $em = $this->getDoctrine()->getManager();
+        $em->flush();
+
+        return $this->redirectToRoute('session_index');
+    }
+
     protected function importDirectory(string $directory, array &$imported, $last = null, $prefix = [])
     {
         $manager = $this->getDoctrine()->getManager();

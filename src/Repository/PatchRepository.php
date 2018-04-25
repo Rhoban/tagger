@@ -19,6 +19,33 @@ class PatchRepository extends ServiceEntityRepository
         parent::__construct($registry, Patch::class);
     }
 
+/*
+// XXX Request that includes the consensus criterions
+
+SELECT patch.*, (
+    SELECT tag.value
+    FROM tag
+    WHERE tag.patch_id = patch.id
+    GROUP BY tag.value
+    ORDER BY COUNT(tag.id) DESC
+    LIMIT 1
+) bestValue,
+(
+    SELECT COUNT(*)
+    FROM tag
+    WHERE tag.patch_id = patch.id
+) totalTags,
+(
+    SELECT COUNT(*)
+    FROM tag
+    WHERE tag.patch_id = patch.id
+    AND tag.value = bestValue
+) bestValueCount
+
+FROM patch
+ */
+
+
 //    /**
 //     * @return Patch[] Returns an array of Patch objects
 //     */
