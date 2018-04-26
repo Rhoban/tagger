@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Form\CategoryType;
+use App\Repository\PatchRepository;
 use App\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,9 +51,14 @@ class CategoryController extends Controller
     /**
      * @Route("/{id}", name="category_show", methods="GET")
      */
-    public function show(Category $category): Response
+    public function show(Category $category, PatchRepository $patches): Response
     {
-        return $this->render('category/show.html.twig', ['category' => $category]);
+        $infos = $patches->getPatchesInfos($category);
+
+        return $this->render('category/show.html.twig', [
+            'category' => $category,
+            'patchesInfo' => $infos
+        ]);
     }
 
     /**

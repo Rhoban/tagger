@@ -31,6 +31,10 @@ class Tag
 
     /**
      * @ORM\Column(type="integer")
+     *
+     * 0: no
+     * 1: yes
+     * 2: unknown
      */
     private $value;
 

@@ -25,17 +25,15 @@
         </tbody>
     </table>
 
-    {% for category, patches in sequence.patchesByCategory %}
+    {% for category, patchesInfo in patches %}
     <hr/>
-    <h3>{{ patches|length }} patches for category "{{ category }}"</h3>
-        {% for patch in patches %}
-        <img width="64" height="64" src="{{ asset(patch.fileName) }}" />
-        {% endfor %}
+    <div>
+    <h3>{{ patchesInfo.count }} patches for category "{{ category }}"</h3>
+        {% include 'patchesInfo.html.twig' %}
     {% endfor %}
+
     <hr/>
-
     <a class="btn btn-info" href="{{ path('sequence_edit', {'id': sequence.id}) }}">Edit</a>
-
     <hr/>
 
     {{ include('sequence/_delete_form.html.twig') }}

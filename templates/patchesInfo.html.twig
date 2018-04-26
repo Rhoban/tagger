@@ -1,0 +1,11 @@
+
+{% for value, patches in patchesInfo.patches %}
+<h4>Value: {{ value }} ({{ patches|length }} patches)</h4>
+{% for patch in patches %}
+<img title="{{ patch.totalTags }} tag(s){% if patch.totalTags %}, consensus={{ (100*patch.bestValueTags/patch.totalTags)|round }}%{% endif %}" width="64" height="64" src="{{ asset(patch.filename) }}" />
+{% else %}
+<div class="alert alert-danger">
+    No patch for this value
+</div>
+{% endfor %}
+{% endfor %}

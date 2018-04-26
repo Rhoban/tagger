@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\Sequence;
 use App\Entity\Session;
 use App\Form\SequenceType;
+use App\Repository\PatchRepository;
 use App\Repository\SequenceRepository;
+use App\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,9 +57,18 @@ class SequenceController extends Controller
     /**
      * @Route("{id}/show", name="sequence_show", methods="GET")
      */
-    public function show(Sequence $sequence): Response
+    public function show(Sequence $sequence, PatchRepository $patches, CategoryRepository $categories): Response
     {
-        return $this->render('sequence/show.html.twig', ['sequence' => $sequence]);
+        $patchesInfo = [];
+        foreach ($categories->findAll() as $category) {
+            $infos = $patches->getPatchesInfos($category, $sequence);
+            $patchesInfo[$category->getName()] = $infos;
+        }
+
+        return $this->render('sequence/show.html.twig', [
+            'sequence' => $sequence,
+            'patches' => $patchesInfo
+        ]);
     }
 
     /**
