@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class PatchRepository extends ServiceEntityRepository
 {
-    static public $consensusMinUsers = 1;
+    static public $consensusMinUsers = 2;
     static public $consensus = 0.6;
 
     public function __construct(RegistryInterface $registry)
@@ -117,14 +117,16 @@ class PatchRepository extends ServiceEntityRepository
      * @param  integer  $n        Number of tags we want
      * @param  boolean  $count    Do we want the count or to retrieve ?
      */
-    public function getPatchesToTag(?User $user, Category $category, $n = 16, $count = false)
+    public function getPatchesToTag(?User $user, Category $category, $n = 16, $count = false, $noConsensus = false)
     {
         $view = $this->patchesView();
         $em = $this->getEntityManager();
 
+        $consensusCond = $this->consensusOkSqlCondition();
         $what = $count ? 'COUNT(*) nb' : 'patch.*';
         $order = $count ? '' : "ORDER BY totalTags DESC, RAND() DESC LIMIT $n";
         $filterUser = $user ? 'tag.id IS NULL' : '1';
+        $hasConsensus = $noConsensus ? 'AND NOT '.$consensusCond : '';
 
         $stmt = $em->getConnection()->prepare(
             "SELECT $what FROM $view
@@ -134,6 +136,7 @@ class PatchRepository extends ServiceEntityRepository
             WHERE patch.category_id = :category
             AND session.enabled
             AND $filterUser
+            $hasConsensus
             $order
             "
         );

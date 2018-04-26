@@ -63,6 +63,17 @@ function updateProgress()
     var pct = Math.round(100*(toTag-toTagUser)/toTag);
     $('.tag-progress .progress-bar').css('width', pct+'%');
     $('.tag-progress span').text(pct+'%');
+
+    if (toTagUserNoConsensus) {
+        $('.contributions').text(toTagUserNoConsensus+' useful remaining!');
+    } else {
+        $('.contributions').text('improving quality');
+    }
+
+    $('.tag-team-progress').show();
+    var pctTeam = Math.round(100*(toTag-toTagTeam)/toTag);
+    $('.tag-team-progress .progress-bar').css('width', pctTeam+'%');
+    $('.tag-team-progress span').text(pctTeam+'%');
 }
 
 function updatePatches()
@@ -94,7 +105,9 @@ $(document).ready(function() {
 
             $.post(send_url, data, function(json) {
                 toTagUser = json[0];
-                toCancel = json[1];
+                toTagUserNoConsensus = json[1];
+                toTagTeam = json[2];
+                toCancel = json[3];
                 updateProgress();
             });
         }
@@ -103,10 +116,11 @@ $(document).ready(function() {
     });
 
     $('.tag-cancel').click(function() {
-        $.post(cancel_url, {'tags': toCancel}, function(data) {
+        $.post(cancel_url, {'tags': toCancel}, function(json) {
             toCancel = null;
-            json = JSON.parse(data);
-            toTagUser = data;
+            toTagUser = json[0];
+            toTagUserNoConsensus = json[1];
+            toTagTeam = json[2];
             updateProgress();
         });
 

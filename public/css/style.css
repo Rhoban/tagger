@@ -18,10 +18,17 @@
     opacity:0.4;
 }
 
-.upload-progress, .tag-progress {
+.upload-progress {
     display:none;
     line-height: 0.8;
     height:50px;
+    font-size:120%;
+}
+
+.tag-progress, .tag-team-progress {
+    display:none;
+    line-height: 0.8;
+    height:30px;
     font-size:120%;
 }
 
@@ -81,4 +88,8 @@
 
 .patch-info-unknown {
     background-image:url('img/question.png');
+}
+
+.tag-progress {
+    margin-bottom:15px;
 }

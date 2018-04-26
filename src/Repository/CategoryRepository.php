@@ -23,8 +23,14 @@ class CategoryRepository extends ServiceEntityRepository
     {
         $em = $this->getEntityManager();
         $stmt = $em->getConnection()->prepare(
-            'SELECT category.*, (SELECT COUNT(*) FROM patch WHERE category_id = category.id) as patches
-            FROM category'
+            'SELECT category.*,
+            (SELECT COUNT(*) n FROM patch WHERE category_id = category.id) as patches,
+            (SELECT COUNT(*) n FROM patch
+            JOIN sequence ON patch.sequence_id = sequence.id
+            JOIN session ON sequence.session_id = session.id
+            WHERE category_id = category.id AND session.enabled) as patchesEnabled
+            FROM category
+            '
         );
         $stmt->execute();
 

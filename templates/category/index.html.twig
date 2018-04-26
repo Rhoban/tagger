@@ -9,7 +9,8 @@
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Patches</th>
+                <th>All patches</th>
+                <th>Enabled patches</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -20,6 +21,7 @@
                     <kbd>{{ category.name }}</kbd>
                 </td>
                 <th>{{ category.patches }}</th>
+                <th>{{ category.patchesEnabled }}</th>
                 <td class="actions">
                     <a class="btn btn-primary" href="{{ path('category_show', {'id': category.id}) }}">Show</a>
                     <a class="btn btn-info" href="{{ path('category_edit', {'id': category.id}) }}">Edit</a>

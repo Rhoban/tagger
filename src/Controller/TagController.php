@@ -19,11 +19,16 @@ class TagController extends Controller
     public function index(Category $category, PatchRepository $patches)
     {
         $toTagUser = $patches->getPatchesToTag($this->getUser(), $category, 0, true);
+        $toTagUserNoConsensus = $patches->getPatchesToTag($this->getUser(), $category, 0, true, true);
+
         $toTag = $patches->getPatchesToTag(null, $category, 0, true);
+        $toTagTeam = $patches->getPatchesToTag(null, $category, 0, true, true);
 
         return $this->render('tag/index.html.twig', [
             'category' => $category,
             'toTagUser' => $toTagUser,
+            'toTagUserNoConsensus' => $toTagUserNoConsensus,
+            'toTagTeam' => $toTagTeam,
             'toTag' => $toTag
         ]);
     }
@@ -33,7 +38,12 @@ class TagController extends Controller
      */
     public function patches(Category $category, PatchRepository $patches, Request $request)
     {
-        $toTag = $patches->getPatchesToTag($this->getUser(), $category);
+        $toTagUserNoConsensus = $patches->getPatchesToTag($this->getUser(), $category, 0, true, true);
+        if ($toTagUserNoConsensus) {
+            $toTag = $patches->getPatchesToTag($this->getUser(), $category, 16, false, true);
+        } else {
+            $toTag = $patches->getPatchesToTag($this->getUser(), $category, 16);
+        }
         $json = [];
 
         foreach ($toTag as $patch) {
@@ -75,7 +85,9 @@ class TagController extends Controller
         }
 
         return new JsonResponse([
-            $patches->getPatchesToTag($this->getUser(), $category, 0, true),
+            (int)$patches->getPatchesToTag($this->getUser(), $category, 0, true),
+            (int)$patches->getPatchesToTag($this->getUser(), $category, 0, true, true),
+            (int)$patches->getPatchesToTag(null, $category, 0, true, true),
             $tags
         ]);
     }
@@ -96,6 +108,10 @@ class TagController extends Controller
         }
 
         $em->flush();
-        return new JsonResponse($patches->getPatchesToTag($this->getUser(), $category, 0, true));
+        return new JsonResponse([
+            (int)$patches->getPatchesToTag($this->getUser(), $category, 0, true),
+            (int)$patches->getPatchesToTag($this->getUser(), $category, 0, true, true),
+            (int)$patches->getPatchesToTag(null, $category, 0, true, true),
+        ]);
     }
 }

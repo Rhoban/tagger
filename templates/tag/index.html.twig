@@ -9,7 +9,7 @@
 
 {% block body %}
 
-<h2>Tagging {{ category.name }}</h2>
+<h2>Tagging {{ category.name }} (<span class="contributions">?</span>)</h2>
 
 <script>
 var patches_url = '{{ path('tag_patches', {'category': category.id}) }}';
@@ -17,6 +17,8 @@ var send_url = '{{ path('tag_send', {'category': category.id}) }}';
 var cancel_url = '{{ path('tag_cancel', {'category': category.id}) }}';
 var toTag = {{ toTag }};
 var toTagUser = {{ toTagUser }};
+var toTagUserNoConsensus = {{ toTagUserNoConsensus }};
+var toTagTeam = {{ toTagTeam }};
 </script>
 
 <div class="tag-zone">
@@ -36,9 +38,17 @@ var toTagUser = {{ toTagUser }};
 <hr/>
 
 <div class="progress tag-progress">
-  <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 0%">
-      <span>0%</span>
-  </div>
+    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 0%">
+        <span>0%</span>
+    </div>
 </div>
+
+<div class="progress tag-team-progress">
+    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 0%">
+        <span>0%</span>
+    </div>
+</div>
+
+<hr/>
 
 {% endblock %}
