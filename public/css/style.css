@@ -1,3 +1,6 @@
+.not-shown {
+    display:none;
+}
 
 .body-container {
     padding-top: 20px;
@@ -15,7 +18,7 @@
     opacity:0.4;
 }
 
-.upload-progress {
+.upload-progress, .tag-progress {
     display:none;
     line-height: 0.8;
     height:50px;
@@ -33,4 +36,49 @@
 .actions {
     white-space: nowrap;
     width:1%;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+.tag-zone img {
+    margin: 3px;
+}
+
+.tag-zone, .tag-actions {
+    text-align:center;
+}
+
+.patches {
+    margin:auto;
+    max-width:550px;
+}
+
+.patch-container {
+    cursor: pointer;
+    display:inline-block;
+}
+
+.patch-info {
+    position:absolute;
+    z-index:9999;
+    width:64px;
+    height:64px;
+    margin-top:8px;
+    margin-left:8px;
+}
+
+.patch-info-ok {
+    background-image:url('img/ok.png');
+}
+
+.patch-info-unknown {
+    background-image:url('img/question.png');
 }

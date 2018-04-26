@@ -5,5 +5,21 @@
 {% endblock %}
 
 {% block body %}
-    Hello
+<h1>Welcome on Tagger</h1>
+
+{% for category in categories %}
+<h2>Tag {{ category.name }}</h2>
+
+{% if category.toTagUser %}
+You have <b>{{ category.toTagUser }}/{{ category.toTag }}</b> images to tag!<br/>
+
+<a class="btn btn-success btn-tag" href="{{ path('tag', {'category': category.id}) }}">
+    Start tagging!
+</a>
+{% else %}
+<div class="alert alert-success">
+    You tagged all the ({{ category.toTag }}) available images from this category
+</div>
+{% endif %}
+{% endfor %}
 {% endblock %}

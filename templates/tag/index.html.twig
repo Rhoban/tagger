@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tagging{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript" src="{{ asset('js/tagger.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+
+<h2>Tagging {{ category.name }}</h2>
+
+<script>
+var patches_url = '{{ path('tag_patches', {'category': category.id}) }}';
+var send_url = '{{ path('tag_send', {'category': category.id}) }}';
+var cancel_url = '{{ path('tag_cancel', {'category': category.id}) }}';
+var toTag = {{ toTag }};
+var toTagUser = {{ toTagUser }};
+</script>
+
+<div class="tag-zone">
+</div>
+
+<div class="tag-actions">
+    <a href="#" class="btn btn-danger tag-cancel cancel-last">Cancel last tags</a>
+    <a href="#" class="btn btn-success tag-ok">OK</a>
+</div>
+
+<div class="alert alert-success not-shown tag-well-done">
+    <h2>Well done</h2>
+
+    You did everything you can regarding the tagging for {{ category.name }}
+</div>
+
+<hr/>
+
+<div class="progress tag-progress">
+  <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 0%">
+      <span>0%</span>
+  </div>
+</div>
+
+{% endblock %}
