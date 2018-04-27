@@ -11,7 +11,7 @@
 
 {% for category in categories %}
 <div class="card m-3">
-  <h5 class="card-header">Tag {{ category.name }}</h5>
+  <h5 class="card-header">Tag {{ category.name }} ({{ category.toTag }} active patches)</h5>
   <div class="card-body">
     {% if app.user.isTrainedFor(category.category) %}
         {% if category.toTagUser %}
@@ -29,9 +29,11 @@
         {% else %}
             <h5 class="card-title text-success">You tagged everything you could tag here!</h5>
 
+            {% if category.toTag %}
             <div class="progress m-1">
             <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: {{ (category.toTag-category.toTagTeam)*100/category.toTag }}%"></div>
             </div>
+            {% endif %}
         {% endif %}
     {% else %}
         <p>
