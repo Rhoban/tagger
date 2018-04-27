@@ -12,6 +12,7 @@
                 <th>Email</th>
                 <th>LastLogin</th>
                 <th>Admin?</th>
+                <th>Tags</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -20,10 +21,16 @@
             <tr>
                 <td><kbd>{{ user.username }}<kbd></td>
                 <td>{{ user.email }}</td>
-                <td>{{ user.lastLogin ? user.lastLogin|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ user.last_login ? user.last_login|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ 'ROLE_ADMIN' in user.roles ? 'Yes' : 'No' }}</td>
+                <th>{{ user.tags }}</th>
                 <td>
-                    <a class="btn btn-info" href="{{ path('user_edit', {'id': user.id}) }}">Edit</a>
+                    <a class="btn btn-info" href="{{ path('user_edit', {'id': user.id}) }}">
+                        Edit
+                    </a>
+                    <a class="btn btn-danger" onclick="return confirm('Delete tags ?')" href="{{ path('user_untag', {'id': user.id}) }}">
+                        Remove tags
+                    </a>
                 </td>
             </tr>
         {% else %}

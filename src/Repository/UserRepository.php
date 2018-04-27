@@ -19,6 +19,19 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    public function getAll()
+    {
+        $em = $this->getEntityManager();
+        $stmt = $em->getConnection()->prepare(
+            'SELECT users.*, (SELECT COUNT(*) FROM tag WHERE tag.user_id = users.id) tags
+            FROM users
+            '
+        );
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

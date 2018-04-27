@@ -22,7 +22,7 @@ class UserController extends Controller
     {
         $users = $this->getDoctrine()
             ->getRepository(User::class)
-            ->findAll();
+            ->getAll();
 
         return $this->render('user/index.html.twig', ['users' => $users]);
     }
@@ -92,6 +92,22 @@ class UserController extends Controller
             $em->remove($user);
             $em->flush();
         }
+
+        return $this->redirectToRoute('user_index');
+    }
+
+    /**
+     * @Route("/untag/{id}", name="user_untag")
+     */
+    public function untag(User $user): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        foreach ($user->getTags() as $tag) {
+            $tag->cancel();
+            $em->remove($tag);
+        }
+        $em->flush();
 
         return $this->redirectToRoute('user_index');
     }
