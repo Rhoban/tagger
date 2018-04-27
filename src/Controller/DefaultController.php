@@ -20,6 +20,7 @@ class DefaultController extends Controller
             $cat = $categories->find($info['id']);
             $info['toTag'] = $patches->getPatchesToTag(null, $cat, 0, true);
             $info['toTagUser'] = $patches->getPatchesToTag($this->getUser(), $cat, 0, true);
+            $info['toTagTeam'] = $patches->getPatchesToTag(null, $cat, 0, true, true);
         }
 
         return $this->render('default/index.html.twig', [

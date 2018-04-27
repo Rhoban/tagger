@@ -2,7 +2,8 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="favicon" type="image/icon" href="{{ asset('favicon.ico') }}" />
+        <title>{% block title %}Tagger{% endblock %}</title>
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" />
             <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
