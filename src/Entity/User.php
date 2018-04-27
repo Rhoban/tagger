@@ -112,4 +112,19 @@ class User extends BaseUser
 
         return [$col, $row];
     }
+
+    public function isAdmin()
+    {
+        return in_array('ROLE_ADMIN', $this->getRoles());
+    }
+
+    public function setAdmin(bool $admin)
+    {
+        $roles = ['ROLE_USER'];
+        if ($admin) {
+            $roles[] = 'ROLE_ADMIN';
+        }
+
+        $this->setRoles($roles);
+    }
 }

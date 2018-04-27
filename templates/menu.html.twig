@@ -21,23 +21,28 @@
               </a>
           </li>
           {% else %}
-          {% if is_granted('ROLE_ADMIN') %}
-              <li class="nav-item {% if _route == 'category_index' %}active{% endif %}">
-                  <a class="nav-link" href="{{ path('category_index') }}">
-                      Categories
-                  </a>
-              </li>
-              <li class="nav-item {% if _route == 'session_index' %}active{% endif %}">
-                  <a class="nav-link" href="{{ path('session_index') }}">
-                      Sessions
-                  </a>
-              </li>
-          {% endif %}
           <li class="nav-item {% if _route == 'fos_user_profile_edit' %}active{% endif %}">
               <a class="nav-link" href="{{ path('fos_user_profile_edit') }}">
                   My settings
               </a>
           </li>
+          {% if is_granted('ROLE_ADMIN') %}
+              <li class="nav-item {% if _route == 'category_index' %}active{% endif %}">
+                  <a class="nav-link text-info" href="{{ path('category_index') }}">
+                      Categories
+                  </a>
+              </li>
+              <li class="nav-item {% if _route == 'session_index' %}active{% endif %}">
+                  <a class="nav-link text-info" href="{{ path('session_index') }}">
+                      Sessions
+                  </a>
+              </li>
+              <li class="nav-item {% if _route == 'user_index' %}active{% endif %}">
+                  <a class="nav-link text-info" href="{{ path('user_index') }}">
+                      Users
+                  </a>
+              </li>
+          {% endif %}
           {% endif %}
         </ul>
 
