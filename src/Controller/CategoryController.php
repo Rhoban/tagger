@@ -49,15 +49,16 @@ class CategoryController extends Controller
     }
 
     /**
-     * @Route("/{id}", name="category_show", methods="GET")
+     * @Route("/{id}/{consensus}", name="category_show", methods="GET")
      */
-    public function show(Category $category, PatchRepository $patches): Response
+    public function show(Category $category, PatchRepository $patches, $consensus = 1): Response
     {
-        $infos = $patches->getPatchesInfos($category);
+        $infos = $patches->getPatchesInfos($category, null, $consensus);
 
         return $this->render('category/show.html.twig', [
             'category' => $category,
-            'patchesInfo' => $infos
+            'patchesInfo' => $infos,
+            'consensus' => $consensus
         ]);
     }
 

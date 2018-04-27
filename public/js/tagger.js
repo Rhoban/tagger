@@ -60,7 +60,7 @@ function updateProgress()
     }
 
     $('.tag-progress').show();
-    var pct = Math.round(100*(toTag-toTagUser)/toTag);
+    var pct = (100*(toTag-toTagUser)/toTag).toFixed(2);
     $('.tag-progress .progress-bar').css('width', pct+'%');
     $('.tag-progress span').text(pct+'%');
 
@@ -71,7 +71,7 @@ function updateProgress()
     }
 
     $('.tag-team-progress').show();
-    var pctTeam = Math.round(100*(toTag-toTagTeam)/toTag);
+    var pctTeam = (100*(toTag-toTagTeam)/toTag).toFixed(2);
     $('.tag-team-progress .progress-bar').css('width', pctTeam+'%');
     $('.tag-team-progress span').text(pctTeam+'%');
 }

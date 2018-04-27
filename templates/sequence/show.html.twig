@@ -2,6 +2,14 @@
 
 {% block title %}Sequence{% endblock %}
 
+{% block javascripts %}
+{{ parent() }}
+<script>
+    var untag_url = "{{ path('untag_patch') }}";
+</script>
+<script type="text/javascript" src="{{ asset('js/untag.js') }}"></script>
+{% endblock %}
+
 {% block body %}
     <h1>Sequence "{{ sequence }}"</h1>
     <a href="{{ path('sequence_index', {'session': sequence.session.id}) }}">&laquo; back to list</a>

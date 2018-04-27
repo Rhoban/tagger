@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SessionRepository")
+ * @ORM\Table(indexes={@ORM\Index(name="enabled", columns={"enabled"})})
  */
 class Session
 {

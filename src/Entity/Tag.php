@@ -55,6 +55,16 @@ class Tag
         return $this;
     }
 
+    public function apply()
+    {
+        $this->getPatch()->apply($this);
+    }
+
+    public function cancel()
+    {
+        $this->getPatch()->cancel($this);
+    }
+
     public function getUser(): ?User
     {
         return $this->user;

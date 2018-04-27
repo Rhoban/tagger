@@ -5,12 +5,19 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Patch;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PatchRepository")
+ * @ORM\Table(indexes={@ORM\Index(name="consensus", columns={"consensus"})})
+ * @ORM\Table(indexes={@ORM\Index(name="votes", columns={"votes"})})
  */
 class Patch
 {
+    static public $consensusMinUsers = 1;
+
+    static public $consensusThreshold = 0.6;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -40,9 +47,46 @@ class Patch
      */
     private $tags;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $votesYes;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $votesNo;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $votesUnknown;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $votes;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $consensus;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $value;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
+        $this->value = 2;
+        $this->votes = 0;
+        $this->votesYes = 0;
+        $this->votesNo = 0;
+        $this->votesUnknown = 0;
+        $this->consensus = false;
+
     }
 
     public function getId()
@@ -120,5 +164,141 @@ class Patch
         }
 
         return $this;
+    }
+
+    public function getVotesYes(): ?int
+    {
+        return $this->votesYes;
+    }
+
+    public function setVotesYes(int $votesYes): self
+    {
+        $this->votesYes = $votesYes;
+
+        return $this;
+    }
+
+    public function getVotesNo(): ?int
+    {
+        return $this->votesNo;
+    }
+
+    public function setVotesNo(int $votesNo): self
+    {
+        $this->votesNo = $votesNo;
+
+        return $this;
+    }
+
+    public function getVotesUnknown(): ?int
+    {
+        return $this->votesUnknown;
+    }
+
+    public function setVotesUnknown(int $votesUnknown): self
+    {
+        $this->votesUnknown = $votesUnknown;
+
+        return $this;
+    }
+
+    public function getVotes(): ?int
+    {
+        return $this->votes;
+    }
+
+    public function setVotes(int $votes): self
+    {
+        $this->votes = $votes;
+
+        return $this;
+    }
+
+    public function getConsensus(): ?bool
+    {
+        return $this->consensus;
+    }
+
+    public function setConsensus(bool $consensus): self
+    {
+        $this->consensus = $consensus;
+
+        return $this;
+    }
+
+    public function getValue(): ?int
+    {
+        return $this->value;
+    }
+
+    public function setValue(int $value): self
+    {
+        $this->value = $value;
+
+        return $this;
+    }
+
+    public function resetVotes()
+    {
+        $this->votes = 0;
+        $this->votesYes = 0;
+        $this->votesNo = 0;
+        $this->votesUnknown = 0;
+        $this->consensus = false;
+    }
+
+    public function updateConsensus()
+    {
+        $this->value = 2;
+        $this->consensus = false;
+
+        if ($this->votes >= self::$consensusMinUsers) {
+            $maxVotes = max($this->votesNo, $this->votesYes, $this->votesUnknown);
+
+            if ($maxVotes/$this->votes >= self::$consensusThreshold) {
+                if ($maxVotes == $this->votesNo) $this->value = 0;
+                else if ($maxVotes == $this->votesYes) $this->value = 1;
+                else if ($maxVotes == $this->votesUnknown) $this->value = 2;
+                $this->consensus = true;
+            }
+        }
+    }
+
+    public function applyValue(Tag $tag, $delta = 1)
+    {
+        $tmp = $this->getVotes();
+
+        if ($tag->getValue() == 0) {
+            $this->votesNo = max(0, $this->votesNo + $delta);
+        } else if ($tag->getValue() == 1) {
+            $this->votesYes = max(0, $this->votesYes + $delta);
+        } else if ($tag->getValue() == 2) {
+            $this->votesUnknown = max(0, $this->votesUnknown + $delta);
+        }
+        $this->setVotes(max(0, $this->votesNo + $this->votesYes + $this->votesUnknown));
+    }
+
+    public function apply(Tag $tag)
+    {
+        $this->applyValue($tag);
+
+        $this->updateConsensus();
+    }
+
+    public function cancel(Tag $tag)
+    {
+        $this->applyValue($tag, -1);
+
+        $this->updateConsensus();
+    }
+
+    public function recompute()
+    {
+        $this->resetVotes();
+
+        foreach ($this->getTags() as $tag) {
+            $this->applyValue($tag);
+        }
+        $this->updateConsensus();
     }
 }

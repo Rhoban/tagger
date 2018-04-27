@@ -125,7 +125,7 @@ class Sequence
     public function unlinkPatches()
     {
         foreach ($this->getPatches() as $patch) {
-            unlink($patch->getFullFilename());
+            @unlink($patch->getFullFilename());
         }
     }
 

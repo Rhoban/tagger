@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Entity\Tag;
+use App\Entity\Patch;
 use App\Entity\Category;
 use App\Repository\TagRepository;
 use App\Repository\PatchRepository;
@@ -75,6 +76,7 @@ class TagController extends Controller
                 ->setUser($this->getUser())
                 ->setValue($userTags[$patch->getId()])
                 ;
+            $tag->apply();
             $em->persist($tag);
             $tags[] = $tag;
         }
@@ -103,15 +105,38 @@ class TagController extends Controller
         foreach ($cancelTags as $tagId) {
             $tag = $tags->find($tagId);
             if ($tag && $tag->getUser() == $this->getUser()) {
+                $tag->cancel();
                 $em->remove($tag);
             }
         }
 
         $em->flush();
+
         return new JsonResponse([
             (int)$patches->getPatchesToTag($this->getUser(), $category, 0, true),
             (int)$patches->getPatchesToTag($this->getUser(), $category, 0, true, true),
             (int)$patches->getPatchesToTag(null, $category, 0, true, true),
         ]);
+    }
+
+    /**
+     * @Route("/untag", name="untag_patch")
+     */
+    public function untag(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $patchGet = $request->query->get('patch');
+
+        if ($patch = $em->getRepository(Patch::class)->find($patchGet)) {
+            foreach ($patch->getTags() as $tag) {
+                $em->remove($tag);
+            }
+            $patch->resetVotes();
+            $em->flush();
+
+            return new JsonResponse('ok');
+        } else {
+            return new JsonResponse('ko');
+        }
     }
 }

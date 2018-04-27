@@ -11,57 +11,13 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class PatchRepository extends ServiceEntityRepository
 {
-    static public $consensusMinUsers = 2;
-    static public $consensus = 0.6;
-
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Patch::class);
     }
 
-    protected function patchesView()
+    public function getPatchesInfos(Category $category, ?Sequence $sequence = null, $consensus = true)
     {
-        $sql = 'SELECT patch.*, (
-            SELECT tag.value
-            FROM tag
-            WHERE tag.patch_id = patch.id
-            GROUP BY tag.value
-            ORDER BY COUNT(tag.id) DESC
-            LIMIT 1
-        ) bestValue,
-        (
-            SELECT COUNT(*)
-            FROM tag
-            WHERE tag.patch_id = patch.id
-        ) totalTags,
-        (
-            SELECT COUNT(*)
-            FROM tag
-            WHERE tag.patch_id = patch.id
-            AND tag.value = bestValue
-        ) bestValueTags
-
-        FROM patch';
-
-        return "($sql) patch";
-    }
-
-    // SQL Condition to append to only get images that do have a consensus
-    public function consensusOkSqlCondition()
-    {
-        return '(totalTags >= '.self::$consensusMinUsers.' AND (bestValueTags/totalTags) > '.self::$consensus.')';
-    }
-
-    // Checks if a patch info has the consensus
-    public function patchHasConsensus(array $patch)
-    {
-        return $patch['totalTags'] >= self::$consensusMinUsers &&
-            $patch['bestValueTags']/$patch['totalTags'] > self::$consensus;
-    }
-
-    public function getPatchesInfos(Category $category, ?Sequence $sequence = null)
-    {
-        $view = $this->patchesView();
         $em = $this->getEntityManager();
 
         if ($sequence) {
@@ -70,8 +26,12 @@ class PatchRepository extends ServiceEntityRepository
             $condition = 'AND session.enabled';
         }
 
+        if ($consensus) {
+            $condition .= ' AND patch.consensus';
+        }
+
         $stmt = $em->getConnection()->prepare(
-            "SELECT patch.* FROM $view
+            "SELECT patch.* FROM patch
             JOIN sequence ON patch.sequence_id = sequence.id
             JOIN session ON sequence.session_id = session.id
             WHERE patch.category_id = :category
@@ -90,19 +50,19 @@ class PatchRepository extends ServiceEntityRepository
         $tmp = $stmt->fetchAll();
         $infos = [
             'patches' => [
-                'yes' => [],
-                'no' => [],
-                'unknown' => [],
+                'yes' => [], 'no' => [], 'unknown' => [],
             ],
             'count' => count($tmp)
         ];
 
+        $values = [
+            0 => 'no', 1 => 'yes', 2 => 'unknown'
+        ];
         foreach ($tmp as $patch) {
-            if ($this->patchHasConsensus($patch) && $patch['bestValue'] != 2) {
-                $infos['patches'][$patch['bestValue'] ? 'yes' : 'no'][] = $patch;
-            } else {
-                $infos['patches']['unknown'][] = $patch;
-            }
+            $patch['bestValueTags'] = max($patch['votes_yes'], $patch['votes_no'], $patch['votes_unknown']);
+
+            $value = $patch['consensus'] ? $patch['value'] : 2;
+            $infos['patches'][$values[$value]][] = $patch;
         }
 
 
@@ -119,17 +79,15 @@ class PatchRepository extends ServiceEntityRepository
      */
     public function getPatchesToTag(?User $user, Category $category, $n = 16, $count = false, $noConsensus = false)
     {
-        $view = $this->patchesView();
         $em = $this->getEntityManager();
 
-        $consensusCond = $this->consensusOkSqlCondition();
         $what = $count ? 'COUNT(*) nb' : 'patch.*';
-        $order = $count ? '' : "ORDER BY totalTags DESC, RAND() DESC LIMIT $n";
-        $filterUser = $user ? 'tag.id IS NULL' : '1';
-        $hasConsensus = $noConsensus ? 'AND NOT '.$consensusCond : '';
+        $order = $count ? '' : "ORDER BY votes DESC, RAND() DESC LIMIT $n";
+        $filterUser = $user ? 'tag.id IS NULL' : 'true';
+        $hasConsensus = $noConsensus ? 'AND NOT consensus' : '';
 
         $stmt = $em->getConnection()->prepare(
-            "SELECT $what FROM $view
+            "SELECT $what FROM patch
             LEFT JOIN tag ON (tag.user_id = :user AND tag.patch_id = patch.id)
             JOIN sequence ON patch.sequence_id = sequence.id
             JOIN session ON sequence.session_id = session.id
