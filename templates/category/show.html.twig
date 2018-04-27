@@ -16,6 +16,9 @@
     {% else %}
         <a class="btn btn-primary float-right" href="{{ path('category_show', {'id': category.id, 'consensus': 1}) }}">Only with consensus</a>
     {% endif %}
+
+    <a class="float-right btn btn-warning" href="{{ path('category_download', {'id': category.id}) }}">Download</a>
+
     <h1>Category</h1>
     <a href="{{ path('category_index') }}">&laquo; back to list</a>
 

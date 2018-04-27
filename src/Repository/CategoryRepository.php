@@ -28,7 +28,12 @@ class CategoryRepository extends ServiceEntityRepository
             (SELECT COUNT(*) n FROM patch
             JOIN sequence ON patch.sequence_id = sequence.id
             JOIN session ON sequence.session_id = session.id
-            WHERE category_id = category.id AND session.enabled) as patches_enabled
+            WHERE category_id = category.id AND session.enabled) as patches_enabled,
+            (SELECT COUNT(*) n FROM patch
+            JOIN sequence ON patch.sequence_id = sequence.id
+            JOIN session ON sequence.session_id = session.id
+            WHERE category_id = category.id AND session.enabled
+            AND patch.consensus) as patches_tagged
             FROM category
             '
         );

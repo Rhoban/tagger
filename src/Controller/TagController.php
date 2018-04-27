@@ -39,11 +39,14 @@ class TagController extends Controller
      */
     public function patches(Category $category, PatchRepository $patches, Request $request)
     {
+        $matrix = $this->getUser()->patchesMatrix();
+        $n = $matrix[0]*$matrix[1];
+
         $toTagUserNoConsensus = $patches->getPatchesToTag($this->getUser(), $category, 0, true, true);
         if ($toTagUserNoConsensus) {
-            $toTag = $patches->getPatchesToTag($this->getUser(), $category, 16, false, true);
+            $toTag = $patches->getPatchesToTag($this->getUser(), $category, $n, false, true);
         } else {
-            $toTag = $patches->getPatchesToTag($this->getUser(), $category, 16);
+            $toTag = $patches->getPatchesToTag($this->getUser(), $category, $n);
         }
         $json = [];
 

@@ -26,10 +26,22 @@ class User extends BaseUser
      */
     private $tags;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $patchesCol;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $patchesRow;
+
     public function __construct()
     {
         parent::__construct();
         $this->tags = new ArrayCollection();
+        $this->patchesCol = 4;
+        $this->patchesRow = 4;
         // your own logic
     }
 
@@ -67,5 +79,37 @@ class User extends BaseUser
         }
 
         return $this;
+    }
+
+    public function getPatchesCol(): ?int
+    {
+        return $this->patchesCol;
+    }
+
+    public function setPatchesCol(int $patchesCol): self
+    {
+        $this->patchesCol = $patchesCol;
+
+        return $this;
+    }
+
+    public function getPatchesRow(): ?int
+    {
+        return $this->patchesRow;
+    }
+
+    public function setPatchesRow(int $patchesRow): self
+    {
+        $this->patchesRow = $patchesRow;
+
+        return $this;
+    }
+
+    public function patchesMatrix()
+    {
+        $col = min(8, max(1, $this->getPatchesCol()));
+        $row = min(8, max(1, $this->getPatchesRow()));
+
+        return [$col, $row];
     }
 }

@@ -7,3 +7,6 @@ fos_user:
     user_class: App\Entity\User
     from_email: {address: "fosub@localhost", sender_name: FOSUB}
     use_flash_notifications: false
+    profile:
+        form:
+            type: App\Form\ProfileType

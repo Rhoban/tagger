@@ -11,6 +11,7 @@
                 <th>Name</th>
                 <th>All patches</th>
                 <th>Enabled patches</th>
+                <th>Tagged patches</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -22,7 +23,11 @@
                 </td>
                 <th>{{ category.patches }}</th>
                 <th>{{ category.patches_enabled }}</th>
+                <th>{{ category.patches_tagged }}</th>
                 <td class="actions">
+                    <a class="btn btn-warning" href="{{ path('category_download', {'id': category.id}) }}">
+                        Download
+                    </a>
                     <a class="btn btn-primary" href="{{ path('category_show', {'id': category.id}) }}">Show</a>
                     <a class="btn btn-info" href="{{ path('category_edit', {'id': category.id}) }}">Edit</a>
                     {{ include('category/_delete_form.html.twig') }}

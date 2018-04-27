@@ -33,6 +33,11 @@
                   </a>
               </li>
           {% endif %}
+          <li class="nav-item {% if _route == 'fos_user_profile_edit' %}active{% endif %}">
+              <a class="nav-link" href="{{ path('fos_user_profile_edit') }}">
+                  My settings
+              </a>
+          </li>
           {% endif %}
         </ul>
 

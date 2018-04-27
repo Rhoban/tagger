@@ -5,8 +5,9 @@ var toCancel = null;
 function displayPatches()
 {
     var html = '';
+    var w = (128+6)*(patchesCol);
 
-    html += '<div class="patches noselect">';
+    html += '<div class="patches noselect" style="max-width:'+(w)+'px">';
     for (var k in patches) {
         var patch = patches[k];
         patch[2] = 0;
@@ -96,7 +97,6 @@ $(document).ready(function() {
     $('.tag-ok').click(function() {
         if (can_click) {
             var toSave = patches;
-            updatePatches();
 
             var data = {};
             for (var k in toSave) {
@@ -104,6 +104,7 @@ $(document).ready(function() {
             }
 
             $.post(send_url, data, function(json) {
+                updatePatches();
                 toTagUser = json[0];
                 toTagUserNoConsensus = json[1];
                 toTagTeam = json[2];

@@ -9,6 +9,8 @@ use App\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -49,7 +51,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * @Route("/{id}/{consensus}", name="category_show", methods="GET")
+     * @Route("/show/{id}/{consensus}", name="category_show", methods="GET")
      */
     public function show(Category $category, PatchRepository $patches, $consensus = 1): Response
     {
@@ -96,5 +98,35 @@ class CategoryController extends Controller
         }
 
         return $this->redirectToRoute('category_index');
+    }
+
+    /**
+     * @Route("/download/{id}", name="category_download")
+     */
+    public function download(Category $category, Request $request, PatchRepository $patches): Response
+    {
+        $infos = $patches->getPatchesInfos($category, null, true);
+        $name = uniqid('', true);
+        $zipName = '/archives/'.$category->getName().'_'.date('d_m_Y_H_i_s').'.zip';
+        $zip = new \ZipArchive;
+        $zip->open(WEB_DIRECTORY.$zipName, \ZipArchive::CREATE);
+        $json = [];
+
+        foreach ($infos['patches']['yes'] as $patch) {
+            $targetName = basename($patch['filename']);
+            $json[] = $targetName;
+            $zip->addFile(WEB_DIRECTORY.'/'.$patch['filename'], $targetName);
+        }
+
+        foreach ($infos['patches']['no'] as $patch) {
+            $targetName = basename($patch['filename']);
+            $zip->addFile(WEB_DIRECTORY.'/'.$patch['filename'], $targetName);
+        }
+
+        $zip->addFromString('data.json', json_encode($json));
+
+        $zip->close();
+
+        return new RedirectResponse($request->getUriForPath($zipName));
     }
 }

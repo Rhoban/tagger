@@ -11,6 +11,12 @@
 {% endblock %}
 
 {% block body %}
+    {% if consensus %}
+        <a class="btn btn-primary float-right" href="{{ path('sequence_show', {'id': sequence.id, 'consensus': 0}) }}">Show all</a>
+    {% else %}
+        <a class="btn btn-primary float-right" href="{{ path('sequence_show', {'id': sequence.id, 'consensus': 1}) }}">Only with consensus</a>
+    {% endif %}
+
     <h1>Sequence "{{ sequence }}"</h1>
     <a href="{{ path('sequence_index', {'session': sequence.session.id}) }}">&laquo; back to list</a>
 
