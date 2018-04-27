@@ -13,24 +13,34 @@
 <div class="card m-3">
   <h5 class="card-header">Tag {{ category.name }}</h5>
   <div class="card-body">
-    {% if category.toTagUser %}
-        <h5 class="card-title">You have <b>{{ category.toTagUser }}</b> images to tag!</h5>
-        <div class="progress m-1">
-        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: {{ (category.toTag-category.toTagUser)*100/category.toTag }}%"></div>
-        </div>
-        <div class="progress m-1">
-        <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: {{ (category.toTag-category.toTagTeam)*100/category.toTag }}%"></div>
-        </div>
+    {% if app.user.isTrainedFor(category.category) %}
+        {% if category.toTagUser %}
+            <h5 class="card-title">You have <b>{{ category.toTagUser }}</b> images to tag!</h5>
+            <div class="progress m-1">
+            <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: {{ (category.toTag-category.toTagUser)*100/category.toTag }}%"></div>
+            </div>
+            <div class="progress m-1">
+            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: {{ (category.toTag-category.toTagTeam)*100/category.toTag }}%"></div>
+            </div>
+
+            <a class="btn btn-success btn-tag" href="{{ path('tag', {'category': category.id}) }}">
+                Start tagging {{ category.name }}!
+            </a>
+        {% else %}
+            <h5 class="card-title text-success">You tagged everything you could tag here!</h5>
+
+            <div class="progress m-1">
+            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: {{ (category.toTag-category.toTagTeam)*100/category.toTag }}%"></div>
+            </div>
+        {% endif %}
+    {% else %}
+        <p>
+            You are not trained to tag {{ category.name }}
+        </p>
 
         <a class="btn btn-success btn-tag" href="{{ path('tag', {'category': category.id}) }}">
-            Start tagging {{ category.name }}!
+            Start training tagging {{ category.name }}!
         </a>
-    {% else %}
-        <h5 class="card-title text-success">You tagged everything you could tag here!</h5>
-
-        <div class="progress m-1">
-        <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: {{ (category.toTag-category.toTagTeam)*100/category.toTag }}%"></div>
-        </div>
     {% endif %}
   </div>
 </div>

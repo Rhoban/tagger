@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Training;
 use App\Form\UserType;
+use App\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,17 +63,52 @@ class UserController extends Controller
     /**
      * @Route("/{id}/edit", name="user_edit", methods="GET|POST")
      */
-    public function edit(Request $request, User $user, UserManagerInterface $userManager): Response
+    public function edit(Request $request, User $user, UserManagerInterface $userManager, CategoryRepository $categories): Response
     {
-        $form = $this->createForm(UserType::class, $user);
+        $categoryChoices = [];
+        $indexToCategory = [];
+        $k = 0;
+        $em = $this->getDoctrine()->getManager();
+        foreach ($categories->findAll() as $category) {
+            $categoryChoices[$category->getName()] = $category->getName();
+            $indexToCategory[$category->getName()] = $category;
+            $training = $user->trainingFor($category);
+
+            if ($training) {
+                if ($training->getTrained()) {
+                    $user->trainedCategories[] = $category->getName();
+                }
+            } else {
+                $training = new Training;
+                $training
+                    ->setUser($user)
+                    ->setCategory($category)
+                    ;
+                $em->persist($training);
+            }
+            $k++;
+        }
+        $em->flush();
+
+        $form = $this->createForm(UserType::class, $user, [
+            'categories' => $categoryChoices
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            foreach ($indexToCategory as $k => $category) {
+                $training = $user->trainingFor($category);
+                if (in_array($k, $user->trainedCategories)) {
+                    $training->setTrained(true);
+                } else {
+                    $training->setTrained(false)->setScore(0);
+                }
+            }
 
             if ($user->getPlainPassword()) {
                 $userManager->updateUser($user);
             }
+            $em->flush();
 
             return $this->redirectToRoute('user_edit', ['id' => $user->getId()]);
         }

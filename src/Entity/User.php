@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Category;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -36,12 +37,18 @@ class User extends BaseUser
      */
     private $patchesRow;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Training", mappedBy="user", orphanRemoval=true)
+     */
+    private $trainings;
+
     public function __construct()
     {
         parent::__construct();
         $this->tags = new ArrayCollection();
         $this->patchesCol = 4;
         $this->patchesRow = 4;
+        $this->trainings = new ArrayCollection();
         // your own logic
     }
 
@@ -127,4 +134,79 @@ class User extends BaseUser
 
         $this->setRoles($roles);
     }
+
+    public function removeTrained(Category $trained): self
+    {
+        if ($this->trained->contains($trained)) {
+            $this->trained->removeElement($trained);
+        }
+
+        return $this;
+    }
+
+    public function trainingFor(Category $category): ?Training
+    {
+        foreach ($this->getTrainings() as $training) {
+            if ($training->getCategory() == $category) {
+                return $training;
+            }
+        }
+
+        return null;
+    }
+
+    public function isTrainedFor(Category $category): bool
+    {
+        $training = $this->trainingFor($category);
+
+        if ($training) {
+            return $training->getTrained();
+        }
+
+        return false;
+    }
+
+    public function trainProgress(Category $category): float
+    {
+        $training = $this->trainingFor($category);
+
+        if ($training) {
+            return $training->getScore() / 1000.0;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * @return Collection|Training[]
+     */
+    public function getTrainings(): Collection
+    {
+        return $this->trainings;
+    }
+
+    public function addTraining(Training $training): self
+    {
+        if (!$this->trainings->contains($training)) {
+            $this->trainings[] = $training;
+            $training->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTraining(Training $training): self
+    {
+        if ($this->trainings->contains($training)) {
+            $this->trainings->removeElement($training);
+            // set the owning side to null (unless already changed)
+            if ($training->getUser() === $this) {
+                $training->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public $trainedCategories = [];
 }

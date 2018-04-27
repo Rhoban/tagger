@@ -10,6 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 
@@ -21,7 +22,13 @@ class UserType extends AbstractType
             ->add('username')
             ->add('email')
             ->add('admin', CheckboxType::class, [
-                'required' => false
+                'required' => false,
+                'label' => 'admin'
+            ])
+            ->add('trainedCategories', ChoiceType::class, [
+                'expanded' => true,
+                'multiple' => true,
+                'choices' => $options['categories']
             ])
             ;
 
@@ -44,6 +51,7 @@ class UserType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'categories' => []
         ]);
     }
 }

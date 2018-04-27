@@ -8,7 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SessionRepository")
- * @ORM\Table(indexes={@ORM\Index(name="enabled", columns={"enabled"})})
+ * @ORM\Table(indexes={@ORM\Index(name="enabled", columns={"enabled"}),
+ *        @ORM\Index(name="training", columns={"training"})})
  */
 class Session
 {
@@ -39,9 +40,15 @@ class Session
      */
     private $sequences;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $training;
+
     public function __construct()
     {
         $this->enabled = true;
+        $this->training = false;
         $this->dateCreation = new \DateTime;
         $this->sequences = new ArrayCollection();
     }
@@ -121,5 +128,17 @@ class Session
     public function __toString(): string
     {
         return $this->getName();
+    }
+
+    public function getTraining(): ?bool
+    {
+        return $this->training;
+    }
+
+    public function setTraining(bool $training): self
+    {
+        $this->training = $training;
+
+        return $this;
     }
 }

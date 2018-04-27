@@ -18,6 +18,7 @@ class DefaultController extends Controller
 
         foreach ($infos as &$info) {
             $cat = $categories->find($info['id']);
+            $info['category'] = $cat;
             $info['toTag'] = $patches->getPatchesToTag(null, $cat, 0, true);
             $info['toTagUser'] = $patches->getPatchesToTag($this->getUser(), $cat, 0, true);
             $info['toTagTeam'] = $patches->getPatchesToTag(null, $cat, 0, true, true);

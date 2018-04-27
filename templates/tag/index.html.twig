@@ -12,14 +12,17 @@
 <h2>Tagging {{ category.name }} (<span class="contributions">?</span>)</h2>
 
 <script>
+var training = {{ app.user.isTrainedFor(category) ? 0 : 1 }};
 var patches_url = '{{ path('tag_patches', {'category': category.id}) }}';
 var send_url = '{{ path('tag_send', {'category': category.id}) }}';
+var review_url = '{{ path('tag_review', {'category': category.id}) }}';
 var cancel_url = '{{ path('tag_cancel', {'category': category.id}) }}';
 var toTag = {{ toTag }};
 var toTagUser = {{ toTagUser }};
 var toTagUserNoConsensus = {{ toTagUserNoConsensus }};
 var toTagTeam = {{ toTagTeam }};
 var patchesCol = {{ app.user.patchesCol }};
+var trainProgress = {{ app.user.trainProgress(category) }};
 </script>
 
 <div class="tag-zone">
@@ -33,7 +36,15 @@ var patchesCol = {{ app.user.patchesCol }};
 <div class="alert alert-success not-shown tag-well-done">
     <h2>Well done</h2>
 
-    You did everything you can regarding the tagging for {{ category.name }}
+    {% if app.user.isTrainedFor(category) %}
+        You did everything you can regarding the tagging for {{ category.name }}
+    {% else %}
+        You are now trained!<br/>
+
+        <a class="btn btn-success btn-tag" href="{{ path('tag', {'category': category.id}) }}">
+            Start tagging {{ category.name }}!
+        </a>
+    {% endif %}
 </div>
 
 <img width="0" height="0" src="{{ asset('css/img/ok.png') }}" class="invisible" />

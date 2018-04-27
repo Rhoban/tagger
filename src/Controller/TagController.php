@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Entity\Tag;
 use App\Entity\Patch;
 use App\Entity\Category;
+use App\Entity\Training;
 use App\Repository\TagRepository;
 use App\Repository\PatchRepository;
 
@@ -39,7 +40,13 @@ class TagController extends Controller
      */
     public function patches(Category $category, PatchRepository $patches, Request $request)
     {
-        $matrix = $this->getUser()->patchesMatrix();
+        $user = $this->getUser();
+
+        if (!$user->isTrainedFor($category)) {
+            return $this->trainingPatches($category, $patches, $request);
+        }
+
+        $matrix = $user->patchesMatrix();
         $n = $matrix[0]*$matrix[1];
 
         $toTagUserNoConsensus = $patches->getPatchesToTag($this->getUser(), $category, 0, true, true);
@@ -60,11 +67,47 @@ class TagController extends Controller
         return new JsonResponse($json);
     }
 
+    public function trainingPatches(Category $category, PatchRepository $patches, Request $request)
+    {
+        $user = $this->getUser();
+        $matrix = $user->patchesMatrix();
+        $n = $matrix[0]*$matrix[1];
+
+        if (!$user->trainingFor($category)) {
+            $training = new Training;
+            $training
+                ->setUser($user)
+                ->setCategory($category);
+                ;
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($training);
+            $em->flush();
+        }
+
+        $toTag = $patches->getTrainingPatches($user, $category, $n);
+
+        $json = [];
+
+        foreach ($toTag as $patch) {
+            $json[] = [
+                $patch['id'],
+                $request->getUriForPath('/'.$patch['filename'])
+            ];
+        }
+
+        return new JsonResponse($json);
+    }
+
     /**
      * @Route("/tag/send/{category}", name="tag_send")
      */
     public function sendTags(Category $category, Request $request, PatchRepository $patches)
     {
+        $user = $this->getUser();
+        if (!$user->isTrainedFor($category)) {
+            return new JsonResponse(false);
+        }
+
         $userTags = $request->request->all();
         $tagged = $patches->getPatchesSent($this->getUser(), array_keys($userTags));
         $em = $this->getDoctrine()->getManager();
@@ -95,6 +138,46 @@ class TagController extends Controller
             (int)$patches->getPatchesToTag(null, $category, 0, true, true),
             $tags
         ]);
+    }
+
+    /**
+     * @Route("/tag/review/{category}", name="tag_review")
+     * Review tags for patches
+     */
+    public function reviewTags(Category $category, Request $request, PatchRepository $patches)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $userTags = $request->request->all();
+        $training = $this->getUser()->trainingFor($category);
+
+        $json = [
+            'progress' => 0,
+            'trained' => false,
+            'patches' => []
+        ];
+        foreach ($userTags as $patchId => $tag) {
+            $patch = $patches->find($patchId);
+            if ($patch) {
+                if ($patch->getValue() == $tag) {
+                    $json['patches'][$patchId] = true;
+                    $training->setScore($training->getScore() + 1);
+                } else {
+                    $json['patches'][$patchId] = false;
+                    $training->setScore($training->getScore() - 25);
+                }
+            }
+        }
+        $em->flush();
+
+        $json['progress'] = $this->getUser()->trainProgress($category);
+
+        if ($json['progress'] >= 1.0) {
+            $training->setTrained(true);
+            $json['trained'] = true;
+            $em->flush();
+        }
+
+        return new JsonResponse($json);
     }
 
     /**

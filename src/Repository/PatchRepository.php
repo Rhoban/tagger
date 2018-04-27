@@ -113,6 +113,35 @@ class PatchRepository extends ServiceEntityRepository
     }
 
     /**
+     * [getTrainingPatches description]
+     *
+     * @param  User     $user     [description]
+     * @param  Category $category [description]
+     * @param  integer  $n        [description]
+     * @return [type]             [description]
+     */
+    public function getTrainingPatches(User $user, Category $category, $n = 16)
+    {
+        $em = $this->getEntityManager();
+
+        $stmt = $em->getConnection()->prepare(
+            "SELECT patch.* FROM patch
+            JOIN sequence ON patch.sequence_id = sequence.id
+            JOIN session ON sequence.session_id = session.id
+            WHERE session.training
+            AND patch.category_id = :category
+            ORDER BY RAND() LIMIT $n
+            "
+        );
+
+        $stmt->execute([
+            'category' => $category->getId()
+        ]);
+
+        return $stmt->fetchAll();
+    }
+
+    /**
      * Get all the patches from the list that are not yet tagged by the user,
      * to be sure that we are allowed to tag it after
      */

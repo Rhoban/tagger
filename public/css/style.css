@@ -72,6 +72,14 @@
     display:inline-block;
 }
 
+.patch-container.review-ok {
+    background-color:#b2e45c;
+}
+
+.patch-container.review-ko {
+    background-color:red;
+}
+
 .patch-info {
     position:absolute;
     z-index:9999;
