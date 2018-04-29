@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\Session as SfSession;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -38,12 +39,12 @@ class TagController extends Controller
     /**
      * @Route("/tag/patches/{category}", name="tag_patches")
      */
-    public function patches(Category $category, PatchRepository $patches, Request $request)
+    public function patches(Category $category, PatchRepository $patches, Request $request, SfSession $sess)
     {
         $user = $this->getUser();
 
         if (!$user->isTrainedFor($category)) {
-            return $this->trainingPatches($category, $patches, $request);
+            return $this->trainingPatches($category, $patches, $request, $sess);
         }
 
         $matrix = $user->patchesMatrix();
@@ -62,8 +63,9 @@ class TagController extends Controller
         return new JsonResponse($json);
     }
 
-    public function trainingPatches(Category $category, PatchRepository $patches, Request $request)
+    public function trainingPatches(Category $category, PatchRepository $patches, Request $request, SfSession $sess)
     {
+        $toReview = [];
         $user = $this->getUser();
         $matrix = $user->patchesMatrix();
         $n = $matrix[0]*$matrix[1];
@@ -88,7 +90,9 @@ class TagController extends Controller
                 $patch['id'],
                 $request->getUriForPath('/'.$patch['filename'])
             ];
+            $toReview[] = $patch['id'];
         }
+        $sess->set('toReview', $toReview);
 
         return new JsonResponse($json);
     }
@@ -139,8 +143,9 @@ class TagController extends Controller
      * @Route("/tag/review/{category}", name="tag_review")
      * Review tags for patches
      */
-    public function reviewTags(Category $category, Request $request, PatchRepository $patches)
+    public function reviewTags(Category $category, Request $request, PatchRepository $patches, SfSession $sess)
     {
+        $toReview = $sess->get('toReview', []);
         $em = $this->getDoctrine()->getManager();
         $userTags = $request->request->all();
         $training = $this->getUser()->trainingFor($category);
@@ -151,14 +156,16 @@ class TagController extends Controller
             'patches' => []
         ];
         foreach ($userTags as $patchId => $tag) {
-            $patch = $patches->find($patchId);
-            if ($patch) {
-                if ($patch->getValue() == $tag) {
-                    $json['patches'][$patchId] = true;
-                    $training->setScore($training->getScore() + 1);
-                } else {
-                    $json['patches'][$patchId] = false;
-                    $training->setScore($training->getScore() - 25);
+            if (in_array($patchId, $toReview)) {
+                $patch = $patches->find($patchId);
+                if ($patch) {
+                    if ($patch->getValue() == $tag) {
+                        $json['patches'][$patchId] = true;
+                        $training->setScore($training->getScore() + 1);
+                    } else {
+                        $json['patches'][$patchId] = false;
+                        $training->setScore($training->getScore() - 25);
+                    }
                 }
             }
         }

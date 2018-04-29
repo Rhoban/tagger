@@ -100,3 +100,8 @@
 .tag-progress {
     margin-bottom:15px;
 }
+
+nav li.active {
+    background-color:#222;
+    border-radius:5px;
+}
