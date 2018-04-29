@@ -49,12 +49,7 @@ class TagController extends Controller
         $matrix = $user->patchesMatrix();
         $n = $matrix[0]*$matrix[1];
 
-        $toTagUserNoConsensus = $patches->getPatchesToTag($this->getUser(), $category, 0, true, true);
-        if ($toTagUserNoConsensus) {
-            $toTag = $patches->getPatchesToTag($this->getUser(), $category, $n, false, true);
-        } else {
-            $toTag = $patches->getPatchesToTag($this->getUser(), $category, $n);
-        }
+        $toTag = $patches->getPatchesToTag($this->getUser(), $category, $n);
         $json = [];
 
         foreach ($toTag as $patch) {

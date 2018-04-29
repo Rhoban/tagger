@@ -68,7 +68,7 @@ function updateProgress()
         $('.tag-progress span').text(pct+'%');
 
         if (toTagUserNoConsensus) {
-            $('.contributions').text(toTagUserNoConsensus+' useful remaining!');
+            $('.contributions').text(toTagUserNoConsensus+' useful remaining');
         } else {
             $('.contributions').text('improving quality');
         }

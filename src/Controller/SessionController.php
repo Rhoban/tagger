@@ -182,7 +182,6 @@ class SessionController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             $data = $form->getData();
             $sfFile = $data['archive'];
             $filepath = $sfFile->getRealPath();

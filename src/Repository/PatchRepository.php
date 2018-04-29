@@ -82,13 +82,12 @@ class PatchRepository extends ServiceEntityRepository
         $em = $this->getEntityManager();
 
         $what = $count ? 'COUNT(*) nb' : 'patch.*';
-        $order = $count ? '' : "ORDER BY votes DESC, RAND() DESC LIMIT $n";
-        $filterUser = $user ? 'tag.id IS NULL' : 'true';
+        $order = $count ? '' : "ORDER BY consensus ASC, IF(votes>0,1,0) DESC, RAND() DESC LIMIT $n";
+        $filterUser = $user ? 'patch.id NOT IN (SELECT tag.patch_id FROM tag WHERE tag.user_id = :user)' : 'true';
         $hasConsensus = $noConsensus ? 'AND NOT consensus' : '';
 
         $stmt = $em->getConnection()->prepare(
             "SELECT $what FROM patch
-            LEFT JOIN tag ON (tag.user_id = :user AND tag.patch_id = patch.id)
             JOIN sequence ON patch.sequence_id = sequence.id
             JOIN session ON sequence.session_id = session.id
             WHERE patch.category_id = :category
@@ -99,10 +98,13 @@ class PatchRepository extends ServiceEntityRepository
             "
         );
 
-        $stmt->execute([
-            'category' => $category->getId(),
-            'user' => $user ? $user->getId() : null
-        ]);
+        $params = [
+            'category' => $category->getId()
+        ];
+        if ($user) {
+            $params['user'] = $user->getId();
+        }
+        $stmt->execute($params);
 
         if ($count) {
             $result = $stmt->fetch();
@@ -130,6 +132,7 @@ class PatchRepository extends ServiceEntityRepository
             JOIN session ON sequence.session_id = session.id
             WHERE session.training
             AND patch.category_id = :category
+            AND patch.consensus
             ORDER BY RAND() LIMIT $n
             "
         );
