@@ -10,6 +10,7 @@
             <tr>
                 <th class="large-td">Name</th>
                 <th>Creation date</th>
+                <th>Patches</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -22,10 +23,11 @@
                     (disabled)
                     {% endif %}
                 </td>
-                <td>{{ session.dateCreation ? session.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ session.date_creation ? session.date_creation|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ session.patches }}</td>
                 <td class="actions">
                     <div>
-                        <a class="btn btn-primary" href="{{ path('sequence_index', {'session': session.id}) }}">{{ session.sequences|length }} sequence(s)</a>
+                        <a class="btn btn-primary" href="{{ path('sequence_index', {'session': session.id}) }}">{{ session.sequences }} sequence(s)</a>
                         <a class="btn btn-info" href="{{ path('session_edit', {'id': session.id}) }}">Edit</a>
                         <a class="btn btn-warning" href="{{ path('session_upload', {'id': session.id}) }}">
                             Upload

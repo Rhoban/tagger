@@ -24,7 +24,7 @@ class SequenceController extends Controller
     public function index(SequenceRepository $sequenceRepository, Session $session): Response
     {
         return $this->render('sequence/index.html.twig', [
-                'sequences' => $sequenceRepository->findBy(['session' => $session], ['dateCreation' => 'DESC']),
+                'sequences' => $sequenceRepository->getAll(),
                 'session' => $session
         ]);
     }

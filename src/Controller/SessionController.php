@@ -30,7 +30,7 @@ class SessionController extends Controller
     public function index(SessionRepository $sessionRepository): Response
     {
         return $this->render('session/index.html.twig', [
-            'sessions' => $sessionRepository->findBy([], ['dateCreation' => 'DESC'])
+            'sessions' => $sessionRepository->getAll()
         ]);
     }
 

@@ -74,6 +74,11 @@ class Sequence
         return $this;
     }
 
+    public function getSessionId()
+    {
+        return $this->getSession()->getId();
+    }
+
     public function getSession(): ?Session
     {
         return $this->session;

@@ -19,6 +19,23 @@ class SequenceRepository extends ServiceEntityRepository
         parent::__construct($registry, Sequence::class);
     }
 
+    public function getAll()
+    {
+        $em = $this->getEntityManager();
+
+        $stmt = $em->getConnection()->prepare(
+            "SELECT sequence.*, sequence.session_id as sessionId,
+            (SELECT COUNT(*) FROM patch
+             WHERE patch.sequence_id = sequence.id) patches
+            FROM sequence
+            ORDER BY date_creation DESC
+            "
+        );
+
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
 //    /**
 //     * @return Sequence[] Returns an array of Sequence objects
 //     */

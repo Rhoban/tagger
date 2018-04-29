@@ -19,6 +19,25 @@ class SessionRepository extends ServiceEntityRepository
         parent::__construct($registry, Session::class);
     }
 
+    public function getAll()
+    {
+        $em = $this->getEntityManager();
+
+        $stmt = $em->getConnection()->prepare(
+            "SELECT session.*,
+            (SELECT COUNT(*) FROM sequence WHERE sequence.session_id = session.id) sequences,
+            (SELECT COUNT(*) FROM patch
+             JOIN sequence ON sequence.id = patch.sequence_id
+             WHERE sequence.session_id = session.id) patches
+            FROM session
+            ORDER BY date_creation DESC
+            "
+        );
+
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
 //    /**
 //     * @return Session[] Returns an array of Session objects
 //     */

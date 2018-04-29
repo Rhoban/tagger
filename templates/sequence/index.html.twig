@@ -20,9 +20,9 @@
                 <td>
                     <kbd>{{ sequence.name }}</kbd>
                 </td>
-                <td>{{ sequence.dateCreation ? sequence.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ sequence.date_creation ? sequence.date_creation|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
-                    {{ sequence.patches|length }}
+                    {{ sequence.patches }}
                 </td>
                 <td class="actions">
                     <a class="btn btn-primary" href="{{ path('sequence_show', {'session': session.id, 'id': sequence.id}) }}">Show</a>
