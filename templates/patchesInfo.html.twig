@@ -2,7 +2,7 @@
 {% for value, patches in patchesInfo.patches %}
 <h4>Value: {{ value }} ({{ patches|length }} patches)</h4>
 {% for patch in patches %}
-<img class="mini-patch" rel="{{ patch.id }}" title="{{ patch.votes }} tag(s){% if patch.votes %}, consensus={{ (100*patch.bestValueTags/patch.votes)|round }}%{% endif %}" width="64" height="64" src="{{ asset(patch.filename) }}" />
+<img class="mini-patch" rel="{{ patch.id }}" title="{% if patch.votes %}{{ patch.votes }} tag(s), consensus={{ (100*patch.bestValueTags/patch.votes)|round }}%{% else %}no tag{% endif %}" width="64" height="64" src="{{ asset(patch.filename) }}" />
 {% else %}
 <div class="alert alert-danger">
     No patch for this value
