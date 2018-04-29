@@ -17,8 +17,8 @@ class ProfileType extends ProfileFormType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        parent::buildForm($builder, $options);
-
+        $builder->add('username');
+        $builder->add('email');
         $builder->add('patchesCol');
         $builder->add('patchesRow');
     }
