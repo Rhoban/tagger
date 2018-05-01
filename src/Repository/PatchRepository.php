@@ -16,6 +16,13 @@ class PatchRepository extends ServiceEntityRepository
         parent::__construct($registry, Patch::class);
     }
 
+    /**
+     * Getting patches with informations
+     *
+     * @param  Category $category  The category
+     * @param  [type]   $sequence  The sequence, or null for all sequences
+     * @param  boolean  $consensus Should retrieved patches having consensus ?
+     */
     public function getPatchesInfos(Category $category, ?Sequence $sequence = null, $consensus = true)
     {
         $em = $this->getEntityManager();
@@ -48,6 +55,8 @@ class PatchRepository extends ServiceEntityRepository
 
         $stmt->execute($params);
         $tmp = $stmt->fetchAll();
+
+        // Sorting results in an array of this form:
         $infos = [
             'patches' => [
                 'yes' => [], 'no' => [], 'unknown' => [],
@@ -107,9 +116,11 @@ class PatchRepository extends ServiceEntityRepository
         $stmt->execute($params);
 
         if ($count) {
+            // Retrieve the count
             $result = $stmt->fetch();
             return $result['nb'];
         } else {
+            // Retrieve the results
             return $stmt->fetchAll();
         }
     }

@@ -24,7 +24,7 @@ class SequenceController extends Controller
     public function index(SequenceRepository $sequenceRepository, Session $session): Response
     {
         return $this->render('sequence/index.html.twig', [
-                'sequences' => $sequenceRepository->getAll(),
+                'sequences' => $sequenceRepository->getAll($session),
                 'session' => $session
         ]);
     }

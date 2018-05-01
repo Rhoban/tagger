@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Session;
 use App\Entity\Sequence;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -19,7 +20,7 @@ class SequenceRepository extends ServiceEntityRepository
         parent::__construct($registry, Sequence::class);
     }
 
-    public function getAll()
+    public function getAll(Session $session)
     {
         $em = $this->getEntityManager();
 
@@ -28,11 +29,14 @@ class SequenceRepository extends ServiceEntityRepository
             (SELECT COUNT(*) FROM patch
              WHERE patch.sequence_id = sequence.id) patches
             FROM sequence
+            WHERE sequence.session_id = :session
             ORDER BY date_creation DESC
             "
         );
 
-        $stmt->execute();
+        $stmt->execute([
+            'session' => $session->getId()
+        ]);
         return $stmt->fetchAll();
     }
 

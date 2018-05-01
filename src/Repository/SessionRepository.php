@@ -19,6 +19,9 @@ class SessionRepository extends ServiceEntityRepository
         parent::__construct($registry, Session::class);
     }
 
+    /**
+     * Getting all sequences, with the count of patches
+     */
     public function getAll()
     {
         $em = $this->getEntityManager();
@@ -38,6 +41,9 @@ class SessionRepository extends ServiceEntityRepository
         return $stmt->fetchAll();
     }
 
+    /**
+     * Remove all the tags for the given session
+     */
     public function untag(Session $session)
     {
         $em = $this->getEntityManager();

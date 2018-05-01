@@ -14,8 +14,14 @@ use App\Entity\Patch;
  */
 class Patch
 {
+    /**
+     * Minimum number of users needed to have the consensus
+     */
     static public $consensusMinUsers = 1;
 
+    /**
+     * Ratio of vote for (yes, no or unknown) to gain consensus
+     */
     static public $consensusThreshold = 0.6;
 
     /**

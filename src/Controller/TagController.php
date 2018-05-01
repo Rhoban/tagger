@@ -63,6 +63,9 @@ class TagController extends Controller
         return new JsonResponse($json);
     }
 
+    /**
+     * Returns training patches
+     */
     public function trainingPatches(Category $category, PatchRepository $patches, Request $request, SfSession $sess)
     {
         $toReview = [];

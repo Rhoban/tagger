@@ -1,12 +1,13 @@
 var patches = null;
 var can_click = true;
-var toCancel = null;
+var to_cancel = null;
 var reviewing = false;
 
 function displayPatches()
 {
+    // Genrating the HTML for the tag zone
     var html = '';
-    var w = (128+6)*(patchesCol);
+    var w = (128+6)*(patches_col);
 
     html += '<div class="patches noselect" style="max-width:'+(w)+'px">';
     for (var k in patches) {
@@ -45,7 +46,8 @@ function displayPatches()
 
 function updateProgress()
 {
-    if (toTagUser != 0 || training) {
+    // Showing or hiding the "well done"
+    if (to_tag_user != 0 || training) {
         $('.tag-ok').show();
         $('.tag-zone').show();
         $('.tag-well-done').hide();
@@ -56,38 +58,44 @@ function updateProgress()
     }
 
     if (!training) {
-        if (toCancel) {
+        // Showing or hiding the cancel button
+        if (to_cancel) {
             $('.cancel-last').show();
         } else {
             $('.cancel-last').hide();
         }
 
-        $('.tag-progress').show();
-        var pct = (100*(toTag-toTagUser)/toTag).toFixed(2);
-        $('.tag-progress .progress-bar').css('width', pct+'%');
-        $('.tag-progress span').text(pct+'%');
-
-        if (toTagUserNoConsensus) {
-            $('.contributions').text(toTagUserNoConsensus+' useful remaining');
+        // Updating the "useful" info
+        if (to_tag_user_no_consensus) {
+            $('.contributions').text(to_tag_user_no_consensus+' useful remaining');
         } else {
             $('.contributions').text('improving quality');
         }
 
+        // Updating the progress bars
+        $('.tag-progress').show();
+        var pct = (100*(to_tag-to_tag_user)/to_tag).toFixed(2);
+        $('.tag-progress .progress-bar').css('width', pct+'%');
+        $('.tag-progress span').text(pct+'%');
+
         $('.tag-team-progress').show();
-        var pctTeam = (100*(toTag-toTagTeam)/toTag).toFixed(2);
-        $('.tag-team-progress .progress-bar').css('width', pctTeam+'%');
-        $('.tag-team-progress span').text(pctTeam+'%');
+        var pct_team = (100*(to_tag-to_tag_team)/to_tag).toFixed(2);
+        $('.tag-team-progress .progress-bar').css('width', pct_team+'%');
+        $('.tag-team-progress span').text(pct_team+'%');
     } else {
         updateTrainBar();
         $('.cancel-last').hide();
+        $('.team-progress-row').hide();
+        $('.progress-label').html('<b>Training progress:</b>');
         $('.contributions').text('training');
     }
 }
 
 function updateTrainBar()
 {
+    // Updating rhe progress bar using the train progress
     $('.tag-progress').show();
-    var pct = trainProgress*100;
+    var pct = train_progress*100;
     $('.tag-progress .progress-bar').css('width', pct.toFixed(2)+'%');
     $('.tag-progress span').text(pct.toFixed(2)+'%');
 }
@@ -96,6 +104,7 @@ function updatePatches()
 {
     updateProgress();
 
+    // Getting new patches
     can_click = false;
     $('.tag-zone').css('opacity', 0.5);
     $.getJSON(patches_url, function(data) {
@@ -111,28 +120,35 @@ $(document).ready(function() {
 
     $('.tag-ok').click(function() {
         if (can_click) {
-            var toSave = patches;
+            var to_save = patches;
 
             var data = {};
-            for (var k in toSave) {
-                data[toSave[k][0]] = toSave[k][2];
+            for (var k in to_save) {
+                data[to_save[k][0]] = to_save[k][2];
             }
 
             if (training) {
+                // We are training, either we click ok with tags, or with the
+                // review
                 if (reviewing) {
+                    // Getting new patches
                     updatePatches();
                     reviewing = false;
                 } else {
+                    // Reviewing the tags
                     $.post(review_url, data, function(json) {
                         if (json.trained) {
+                            // The training is over
                             $('.tag-progress').hide();
                             $('.tag-ok').hide();
                             $('.tag-zone').hide();
                             $('.tag-well-done').show();
                         } else {
-                            trainProgress = json.progress;
+                            // Updating progress
+                            train_progress = json.progress;
                             updateTrainBar();
 
+                            // Showing green or red borders
                             for (var id in json.patches) {
                                 var div = $('.patch-container-'+id);
                                 if (json.patches[id]) {
@@ -147,12 +163,16 @@ $(document).ready(function() {
                     });
                 }
             } else {
+                // We send our tags to the server
                 $.post(send_url, data, function(json) {
+                    // Updating patches
                     updatePatches();
-                    toTagUser = json[0];
-                    toTagUserNoConsensus = json[1];
-                    toTagTeam = json[2];
-                    toCancel = json[3];
+
+                    // Updating statistics and progress bar
+                    to_tag_user = json[0];
+                    to_tag_user_no_consensus = json[1];
+                    to_tag_team = json[2];
+                    to_cancel = json[3];
                     updateProgress();
                 });
             }
@@ -163,11 +183,11 @@ $(document).ready(function() {
 
     if (!training) {
         $('.tag-cancel').click(function() {
-            $.post(cancel_url, {'tags': toCancel}, function(json) {
-                toCancel = null;
-                toTagUser = json[0];
-                toTagUserNoConsensus = json[1];
-                toTagTeam = json[2];
+            $.post(cancel_url, {'tags': to_cancel}, function(json) {
+                to_cancel = null;
+                to_tag_user = json[0];
+                to_tag_user_no_consensus = json[1];
+                to_tag_team = json[2];
                 updateProgress();
             });
 
