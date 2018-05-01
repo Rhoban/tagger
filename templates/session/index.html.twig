@@ -33,6 +33,9 @@
                             Upload
                         </a>
                         {{ include('session/_delete_form.html.twig') }}
+                        <a class="btn btn-danger" href="{{ path('session_untag', {'id': session.id}) }}" onclick="return confirm('Remove tags?')">
+                            Untag
+                        </a>
                         <a class="btn btn-info" href="{{ path('session_toggle', {'id': session.id}) }}">
                             {% if session.enabled %}
                             Disable

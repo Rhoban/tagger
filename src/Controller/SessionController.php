@@ -103,6 +103,16 @@ class SessionController extends Controller
     }
 
     /**
+     * @Route("/untag/{id}", name="session_untag")
+     */
+    public function untag(Session $session, SessionRepository $sessions): Response
+    {
+        $sessions->untag($session);
+
+        return $this->redirectToRoute('session_index');
+    }
+
+    /**
      * @Route("/{id}/toggle", name="session_toggle")
      */
     public function toggle(Request $request, Session $session): Response

@@ -97,7 +97,7 @@ class SequenceController extends Controller
      */
     public function delete(Request $request, Session $session, Sequence $sequence): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$sequence->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$sequence->getId(),        $request->request->get('_token'))) {
             $sequence->unlinkPatches();
             $em = $this->getDoctrine()->getManager();
             $em->remove($sequence);
@@ -106,6 +106,18 @@ class SequenceController extends Controller
 
         return $this->redirectToRoute('sequence_index', [
             'session' => $session->getId()
+        ]);
+    }
+
+    /**
+     * @Route("/untag/{id}", name="sequence_untag")
+     */
+    public function untag(Sequence $sequence, SequenceRepository $sequences): Response
+    {
+        $sequences->untag($sequence);
+
+        return $this->redirectToRoute('sequence_index', [
+            'session' => $sequence->getSession()->getId()
         ]);
     }
 }

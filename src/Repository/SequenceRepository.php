@@ -36,32 +36,36 @@ class SequenceRepository extends ServiceEntityRepository
         return $stmt->fetchAll();
     }
 
-//    /**
-//     * @return Sequence[] Returns an array of Sequence objects
-//     */
-    /*
-    public function findByExampleField($value)
+    public function untag(Sequence $sequence)
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $em = $this->getEntityManager();
 
-    /*
-    public function findOneBySomeField($value): ?Sequence
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $stmt = $em->getConnection()->prepare(
+            "DELETE tag FROM tag
+            JOIN patch ON tag.patch_id = patch.id
+            WHERE patch.sequence_id = :sequence
+            "
+        );
+
+        $stmt->execute([
+            'sequence' => $sequence->getId()
+        ]);
+
+        $stmt = $em->getConnection()->prepare(
+            "UPDATE patch
+            SET
+            patch.consensus=false,
+            patch.votes=0,
+            patch.votes_yes=0,
+            patch.votes_no=0,
+            patch.votes_unknown=0,
+            patch.value=2
+            WHERE patch.sequence_id = :sequence
+            "
+        );
+
+        $stmt->execute([
+            'sequence' => $sequence->getId()
+        ]);
     }
-    */
 }

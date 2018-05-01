@@ -38,32 +38,38 @@ class SessionRepository extends ServiceEntityRepository
         return $stmt->fetchAll();
     }
 
-//    /**
-//     * @return Session[] Returns an array of Session objects
-//     */
-    /*
-    public function findByExampleField($value)
+    public function untag(Session $session)
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $em = $this->getEntityManager();
 
-    /*
-    public function findOneBySomeField($value): ?Session
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $stmt = $em->getConnection()->prepare(
+            "DELETE tag FROM tag
+            JOIN patch ON tag.patch_id = patch.id
+            JOIN sequence ON patch.sequence_id = sequence.id
+            WHERE sequence.session_id = :session
+            "
+        );
+
+        $stmt->execute([
+            'session' => $session->getId()
+        ]);
+
+        $stmt = $em->getConnection()->prepare(
+            "UPDATE patch
+            JOIN sequence ON patch.sequence_id = sequence.id
+            SET
+            patch.consensus=false,
+            patch.votes=0,
+            patch.votes_yes=0,
+            patch.votes_no=0,
+            patch.votes_unknown=0,
+            patch.value=2
+            WHERE sequence.session_id = :session
+            "
+        );
+
+        $stmt->execute([
+            'session' => $session->getId()
+        ]);
     }
-    */
 }

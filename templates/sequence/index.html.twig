@@ -28,6 +28,9 @@
                     <a class="btn btn-primary" href="{{ path('sequence_show', {'session': session.id, 'id': sequence.id}) }}">Show</a>
                     <a class="btn btn-info" href="{{ path('sequence_edit', {'id': sequence.id}) }}">Edit</a>
                     {{ include('sequence/_delete_form.html.twig') }}
+                    <a class="btn btn-danger" href="{{ path('sequence_untag', {'id': sequence.id}) }}" onclick="return confirm('Remove tags?')">
+                        Untag
+                    </a>
                 </td>
             </tr>
         {% else %}
