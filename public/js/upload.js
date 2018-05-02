@@ -6,7 +6,7 @@ $(document).ready(function() {
             $('.upload-progress').show();
             monitorUpload = setInterval(function() {
                 $.getJSON(session_upload_progress, function(data) {
-                    if (Array.isArray(data) && data.length) {
+                    if (data) {
                         var processed = data.bytes_processed;
                         var total = data.content_length;
                         var pct = Math.round(processed*100.0/(1.0*total));

@@ -247,7 +247,7 @@ class SessionController extends Controller
         // status
 
         $key = ini_get('session.upload_progress.prefix').$token;
-        $data = isset($_SESSION[$key]) ? $_SESSION[$key] : [];
+        $data = isset($_SESSION[$key]) ? $_SESSION[$key] : null;
 
         return new JsonResponse($data);
     }
