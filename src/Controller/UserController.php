@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Training;
 use App\Form\UserType;
+use App\Repository\UserRepository;
 use App\Repository\CategoryRepository;
+use App\Service\Notifications;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,13 +22,39 @@ class UserController extends Controller
     /**
      * @Route("/", name="user_index", methods="GET")
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $users = $this->getDoctrine()
             ->getRepository(User::class)
             ->getAll();
 
-        return $this->render('user/index.html.twig', ['users' => $users]);
+        $sent = $request->query->get('sent', 0);
+
+        return $this->render('user/index.html.twig', [
+            'users' => $users,
+            'sent' => $sent
+        ]);
+    }
+
+    /**
+     * @Route("/notify", name="user_notify")
+     */
+    public function notify(UserRepository $usersRepository): Response
+    {
+        $users = $usersRepository->findAll();
+
+        $em = $this->getDoctrine()->getManager();
+        foreach ($users as $user) {
+            if (!$user->getUnsuscribeToken()) {
+                $user->setUnsuscribeToken(uniqid('', true));
+            }
+        }
+        $em->flush();
+
+        $notifications = $this->get(Notifications::class);
+        $notifications->notify($users, 'new_tags');
+
+        return $this->redirectToRoute('user_index', ['sent' => 1]);
     }
 
     /**

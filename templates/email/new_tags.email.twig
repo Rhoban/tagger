@@ -1,0 +1,16 @@
+{% block subject %}New images to tag{% endblock %}
+
+{% block body %}
+Hello {{ user.username }},
+
+There is new images to tag on the Rhoban Tagger, come on and help us on:
+{{ url('home') }}
+
+See you soon!
+Rhoban Team
+
+--
+
+To unsuscribe notifications, please click here:
+{{ url('unsuscribe', {'user': user.id, 'token': user.unsuscribeToken}) }}
+{% endblock %}

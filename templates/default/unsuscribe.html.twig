@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Unsuscribe.
+{% endblock %}
+
+{% block body %}
+<h1>Unsuscribe</h1>
+
+{% if ok %}
+<div class="alert alert-success">
+    Notifications for your account were disabled.
+</div>
+{% else %}
+<div class="alert alert-danger">
+    There was a problem during the unsuscribe process.
+</div>
+{% endif %}
+
+{% endblock %}

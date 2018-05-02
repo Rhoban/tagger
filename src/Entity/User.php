@@ -45,11 +45,12 @@ class User extends BaseUser
     public function __construct()
     {
         parent::__construct();
+        
         $this->tags = new ArrayCollection();
         $this->patchesCol = 4;
         $this->patchesRow = 4;
+        $this->acceptNotifications = true;
         $this->trainings = new ArrayCollection();
-        // your own logic
     }
 
     public function getId(): ?int
@@ -209,4 +210,38 @@ class User extends BaseUser
     }
 
     public $trainedCategories = [];
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $acceptNotifications;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $unsuscribeToken;
+
+    public function getAcceptNotifications(): ?bool
+    {
+        return $this->acceptNotifications;
+    }
+
+    public function setAcceptNotifications(bool $acceptNotifications): self
+    {
+        $this->acceptNotifications = $acceptNotifications;
+
+        return $this;
+    }
+
+    public function getUnsuscribeToken(): ?string
+    {
+        return $this->unsuscribeToken;
+    }
+
+    public function setUnsuscribeToken(string $unsuscribeToken): self
+    {
+        $this->unsuscribeToken = $unsuscribeToken;
+
+        return $this;
+    }
 }

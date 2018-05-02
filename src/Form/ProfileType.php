@@ -21,6 +21,7 @@ class ProfileType extends ProfileFormType
         $builder->add('email');
         $builder->add('patchesCol');
         $builder->add('patchesRow');
+        $builder->add('acceptNotifications');
     }
 
     public function getName()

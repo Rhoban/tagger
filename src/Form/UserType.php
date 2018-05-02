@@ -30,6 +30,7 @@ class UserType extends AbstractType
                 'multiple' => true,
                 'choices' => $options['categories']
             ])
+            ->add('acceptNotifications')
             ;
 
         $builder->add('plainPassword', RepeatedType::class, array(
