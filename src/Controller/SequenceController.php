@@ -100,8 +100,10 @@ class SequenceController extends Controller
         if ($this->isCsrfTokenValid('delete'.$sequence->getId(),        $request->request->get('_token'))) {
             $sequence->unlinkPatches();
             $em = $this->getDoctrine()->getManager();
-            $em->remove($sequence);
             $em->flush();
+
+            $repo = $em->getRepository(Sequence::class);
+            $repo->deleteSequence($sequence);
         }
 
         return $this->redirectToRoute('sequence_index', [

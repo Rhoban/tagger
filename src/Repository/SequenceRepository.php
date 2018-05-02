@@ -72,4 +72,34 @@ class SequenceRepository extends ServiceEntityRepository
             'sequence' => $sequence->getId()
         ]);
     }
+
+    public function deleteSequence(Sequence $sequence)
+    {
+        $em = $this->getEntityManager();
+
+        $deletes = [
+            // Removing the tags
+            "DELETE tag
+            FROM tag
+            JOIN patch ON tag.patch_id = patch.id
+            WHERE patch.sequence_id = :sequence
+            ",
+
+            // Removing the patches
+            "DELETE patch
+            FROM patch
+            WHERE patch.sequence_id = :sequence
+            ",
+
+            // Removing the session
+            "DELETE
+            FROM sequence WHERE sequence.id = :sequence
+            "
+        ];
+
+        foreach ($deletes as $delete) {
+            $stmt = $em->getConnection()->prepare($delete);
+            $stmt->execute(['sequence' => $sequence->getId()]);
+        }
+    }
 }

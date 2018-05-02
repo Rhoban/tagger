@@ -95,8 +95,10 @@ class SessionController extends Controller
                 $sequence->unlinkPatches();
             }
             $em = $this->getDoctrine()->getManager();
-            $em->remove($session);
             $em->flush();
+
+            $repo = $em->getRepository(Session::class);
+            $repo->deleteSession($session);
         }
 
         return $this->redirectToRoute('session_index');

@@ -78,4 +78,42 @@ class SessionRepository extends ServiceEntityRepository
             'session' => $session->getId()
         ]);
     }
+
+    public function deleteSession(Session $session)
+    {
+        $em = $this->getEntityManager();
+
+        $deletes = [
+            // Removing the tags
+            "DELETE tag
+            FROM tag
+            JOIN patch ON tag.patch_id = patch.id
+            JOIN sequence on patch.sequence_id = sequence.id
+            WHERE sequence.session_id = :session
+            ",
+
+            // Removing the patches
+            "DELETE patch
+            FROM patch
+            JOIN sequence on patch.sequence_id = sequence.id
+            WHERE sequence.session_id = :session
+            ",
+
+            // Removing the sequences
+            "DELETE
+            FROM sequence
+            WHERE sequence.session_id = :session
+            ",
+
+            // Removing the session
+            "DELETE
+            FROM session WHERE session.id = :session
+            "
+        ];
+
+        foreach ($deletes as $delete) {
+            $stmt = $em->getConnection()->prepare($delete);
+            $stmt->execute(['session' => $session->getId()]);
+        }
+    }
 }
