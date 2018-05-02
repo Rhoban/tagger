@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use App\Repository\UserRepository;
 use App\Repository\PatchRepository;
 use App\Repository\CategoryRepository;
 use App\Entity\User;
@@ -46,6 +47,18 @@ class DefaultController extends Controller
 
         return $this->render('default/unsuscribe.html.twig', [
             'ok' => $ok
+        ]);
+    }
+
+    /**
+     * @Route("/leaderboard", name="leaderboard")
+     */
+    public function leaderboard(UserRepository $usersRepository)
+    {
+        $users = $usersRepository->getLeaderboard();
+
+        return $this->render('default/leaderboard.html.twig', [
+            'users' => $users
         ]);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use App\Entity\Patch;
 
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
@@ -25,6 +26,30 @@ class UserRepository extends ServiceEntityRepository
         $stmt = $em->getConnection()->prepare(
             'SELECT users.*, (SELECT COUNT(*) FROM tag WHERE tag.user_id = users.id) tags
             FROM users
+            '
+        );
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    public function getLeaderboard()
+    {
+        $em = $this->getEntityManager();
+        $stmt = $em->getConnection()->prepare(
+            'SELECT users.*,
+            (SELECT COUNT(*) FROM tag
+            JOIN patch ON tag.patch_id = patch.id
+            WHERE tag.user_id = users.id AND patch.consensus) - 25*
+            (SELECT COUNT(*) FROM tag
+            JOIN patch ON tag.patch_id = patch.id
+            WHERE tag.user_id = users.id
+            AND patch.votes >= '.(Patch::$consensusMinUsers).'
+            AND NOT patch.consensus)
+            score
+            FROM users
+            ORDER BY score DESC
+            LIMIT 25
             '
         );
         $stmt->execute();

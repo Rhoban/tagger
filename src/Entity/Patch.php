@@ -17,7 +17,7 @@ class Patch
     /**
      * Minimum number of users needed to have the consensus
      */
-    static public $consensusMinUsers = 1;
+    static public $consensusMinUsers = 2;
 
     /**
      * Ratio of vote for (yes, no or unknown) to gain consensus

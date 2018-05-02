@@ -29,7 +29,15 @@
                   My settings
               </a>
           </li>
-          {% if is_granted('ROLE_ADMIN') %}
+          {% endif %}
+
+          <li class="nav-item {% if _route == 'leaderboard' %}active{% endif %}">
+              <a class="nav-link" href="{{ path('leaderboard') }}">
+                  Leaderboard
+              </a>
+          </li>
+
+          {% if app.user and is_granted('ROLE_ADMIN') %}
               <li class="nav-item {% if _route == 'category_index' %}active{% endif %}">
                   <a class="nav-link text-info" href="{{ path('category_index') }}">
                       Categories
@@ -45,7 +53,6 @@
                       Users
                   </a>
               </li>
-          {% endif %}
           {% endif %}
 
           {% if app.user %}

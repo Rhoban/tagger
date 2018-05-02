@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Leaderboard
+{% endblock %}
+
+{% block body %}
+
+<h1>Leaderboard</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Rank</th>
+            <th>Username</th>
+            <th>Score</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+        <tr>
+            <td><b>{{ loop.index }}</b></td>
+            <td><b>{{ user.username }}</b></td>
+            <td>{{ max(0, user.score) }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

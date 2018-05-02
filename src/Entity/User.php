@@ -45,12 +45,13 @@ class User extends BaseUser
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->tags = new ArrayCollection();
         $this->patchesCol = 4;
         $this->patchesRow = 4;
         $this->acceptNotifications = true;
         $this->trainings = new ArrayCollection();
+        $this->unsuscribeToken = uniqid('', true);
     }
 
     public function getId(): ?int
