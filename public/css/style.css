@@ -105,3 +105,11 @@ nav li.active {
     background-color:#222;
     border-radius:5px;
 }
+
+.tree {
+    background-color:white;
+    margin:2px;
+    padding:2px;
+    border:1px solid #666;
+    border-radius:3px;
+}
