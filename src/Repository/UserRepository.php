@@ -40,13 +40,17 @@ class UserRepository extends ServiceEntityRepository
             'SELECT users.*,
             (SELECT COUNT(*) FROM tag
             JOIN patch ON tag.patch_id = patch.id
-            WHERE tag.user_id = users.id AND patch.consensus) - 25*
+            WHERE tag.user_id = users.id AND patch.consensus)
+            score,
+
             (SELECT COUNT(*) FROM tag
             JOIN patch ON tag.patch_id = patch.id
             WHERE tag.user_id = users.id
-            AND patch.votes >= '.(Patch::$consensusMinUsers).'
-            AND NOT patch.consensus)
-            score
+            AND patch.consensus
+            AND patch.value != tag.value
+            )
+            disagree
+
             FROM users
             ORDER BY score DESC
             LIMIT 25

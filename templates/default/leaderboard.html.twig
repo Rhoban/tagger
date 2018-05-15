@@ -14,6 +14,9 @@
             <th>Rank</th>
             <th>Username</th>
             <th>Score</th>
+            {% if app.user and is_granted('ROLE_ADMIN') %}
+            <th class="text-info">Confidence</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -22,6 +25,15 @@
             <td><b>{{ loop.index }}</b></td>
             <td><b>{{ user.username }}</b></td>
             <td>{{ max(0, user.score) }}</td>
+            {% if app.user and is_granted('ROLE_ADMIN') %}
+            <td class="text-info">
+                {% if user.score %}
+                {{ max(0, 100*(1-10*user.disagree/user.score)|round(4)) }}%
+                {% else %}
+                ?
+                {% endif %}
+            </td>
+            {% endif %}
         </tr>
     {% endfor %}
     </tbody>
