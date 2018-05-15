@@ -113,3 +113,7 @@ nav li.active {
     border:1px solid #666;
     border-radius:3px;
 }
+
+.captcha_image {
+    margin:2px;
+}
