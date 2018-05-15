@@ -169,10 +169,11 @@ $(document).ready(function() {
                     updatePatches();
 
                     // Updating statistics and progress bar
-                    to_tag_user = json[0];
-                    to_tag_user_no_consensus = json[1];
-                    to_tag_team = json[2];
-                    to_cancel = json[3];
+                    to_tag = json[0];
+                    to_tag_user = json[1];
+                    to_tag_user_no_consensus = json[2];
+                    to_tag_team = json[3];
+                    to_cancel = json[4];
                     updateProgress();
                 });
             }
@@ -185,9 +186,10 @@ $(document).ready(function() {
         $('.tag-cancel').click(function() {
             $.post(cancel_url, {'tags': to_cancel}, function(json) {
                 to_cancel = null;
-                to_tag_user = json[0];
-                to_tag_user_no_consensus = json[1];
-                to_tag_team = json[2];
+                to_tag = json[0];
+                to_tag_user = json[1];
+                to_tag_user_no_consensus = json[2];
+                to_tag_team = json[3];
                 updateProgress();
             });
 
