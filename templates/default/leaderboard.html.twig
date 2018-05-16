@@ -28,7 +28,7 @@
             {% if app.user and is_granted('ROLE_ADMIN') %}
             <td class="text-info">
                 {% if user.score %}
-                {{ max(0, 100*(1-10*user.disagree/user.score)|round(4)) }}%
+                {{ max(0, 100*(1-3*user.disagree/user.score)|round(4)) }}%
                 {% else %}
                 ?
                 {% endif %}
