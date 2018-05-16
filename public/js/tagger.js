@@ -7,7 +7,7 @@ function displayPatches()
 {
     // Genrating the HTML for the tag zone
     var html = '';
-    var w = (128+6)*(patches_col);
+    var w = (patches_size+6)*(patches_col);
 
     html += '<div class="patches noselect" style="max-width:'+(w)+'px">';
     for (var k in patches) {
@@ -15,7 +15,7 @@ function displayPatches()
         patch[2] = 0;
         html += '<div rel="'+k+'" class="patch-container patch-container-'+patch[0]+'">';
         html += '<div class="patch-info patch-info-'+k+'"></div>';
-        html += '<img rel="'+k+'" class="patch" width="128" height="128" src="'+patch[1]+'" />';
+        html += '<img rel="'+k+'" class="patch" width="'+patches_size+'" height="'+patches_size+'" src="'+patch[1]+'" />';
         html += '</div>';
     }
     html += '</div>';
@@ -42,6 +42,12 @@ function displayPatches()
             break;
         }
     });
+
+    var scale = patches_size/128.0;
+    var margin = 8*scale;
+    $('.patch-info').css('margin-left', margin+'px');
+    $('.patch-info').css('margin-top', margin+'px');
+    $('.patch-info').css('transform', 'scale('+scale+')');
 }
 
 function updateProgress()

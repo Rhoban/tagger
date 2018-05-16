@@ -52,6 +52,7 @@ class User extends BaseUser
         $this->tags = new ArrayCollection();
         $this->patchesCol = 4;
         $this->patchesRow = 4;
+        $this->patchesSize = 128;
         $this->acceptNotifications = true;
         $this->trainings = new ArrayCollection();
         $this->unsuscribeToken = uniqid('', true);
@@ -225,6 +226,12 @@ class User extends BaseUser
      */
     private $unsuscribeToken;
 
+    /**
+     * @ORM\Column(type="integer")
+     * @Assert\Range(min=32, max=1024)
+     */
+    private $patchesSize;
+
     public function getAcceptNotifications(): ?bool
     {
         return $this->acceptNotifications;
@@ -245,6 +252,18 @@ class User extends BaseUser
     public function setUnsuscribeToken(string $unsuscribeToken): self
     {
         $this->unsuscribeToken = $unsuscribeToken;
+
+        return $this;
+    }
+
+    public function getPatchesSize(): ?int
+    {
+        return $this->patchesSize;
+    }
+
+    public function setPatchesSize(int $patchesSize): self
+    {
+        $this->patchesSize = $patchesSize;
 
         return $this;
     }
