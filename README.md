@@ -121,7 +121,9 @@ You can change these values by putting it in your `.env` file, for example:
     CONSENSUS_MIN_USERS=1
     CONSENSUS_THRESHOLD=0.6
 
-Will make that one user alone will be able to trigger a consensu, and
+Will make that one user alone will be able to trigger a consensus
+
+*Note: if you update the values of the consensus settings, you might also want to run `./bin/console app:consensus` to update the statistics*
 
 ### Training
 
