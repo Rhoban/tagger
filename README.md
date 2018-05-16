@@ -14,6 +14,8 @@ The current version is based on the Symfony framework and require a MySQL databa
 
 First, clone this repository and run the [composer installation](https://getcomposer.org/):
 
+    git clone https://github.com/Rhoban/tagger.git
+    cd tagger
     composer install
 
 *Note: composer can be obtained on [getcomposer.org](https://getcomposer.org/) or via `apt install composer` on a debian installation*
