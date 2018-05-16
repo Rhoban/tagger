@@ -163,6 +163,10 @@ class User extends BaseUser
 
     public function isTrainedFor(Category $category): bool
     {
+        if (!getenv('TRAINING')) {
+            return true;
+        }
+
         if ($this->isAdmin()) {
             return true;
         }
