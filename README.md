@@ -18,9 +18,13 @@ First, clone this repository and run the [composer installation](https://getcomp
 
 *Note: composer can be obtained on [getcomposer.org](https://getcomposer.org/) or via `apt install composer` on a debian installation*
 
-### Configuring
+### Configuring the database
 
 You then need to configure the app, edit the `.env` file and change the `DATABASE_URL` so that it matches your database configuration.
+
+You can now create the database schema using:
+
+    ./bin/console doctrine:schema:create
 
 ### Getting the first administrator
 
