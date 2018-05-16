@@ -17,12 +17,18 @@ class Patch
     /**
      * Minimum number of users needed to have the consensus
      */
-    static public $consensusMinUsers = 2;
+    static public function consensusMinUsers()
+    {
+        return getenv('CONSENSUS_MIN_USERS') ?: 2;
+    }
 
     /**
      * Ratio of vote for (yes, no or unknown) to gain consensus
      */
-    static public $consensusThreshold = 0.6;
+    static public function consensusThreshold()
+    {
+        return getenv('CONSENSUS_THRESHOLD') ?: 0.6;
+    }
 
     /**
      * @ORM\Id()
@@ -258,10 +264,10 @@ class Patch
         $this->value = 2;
         $this->consensus = false;
 
-        if ($this->votes >= self::$consensusMinUsers) {
+        if ($this->votes >= self::consensusMinUsers()) {
             $maxVotes = max($this->votesNo, $this->votesYes, $this->votesUnknown);
 
-            if ($maxVotes/$this->votes >= self::$consensusThreshold) {
+            if ($maxVotes/$this->votes >= self::consensusThreshold()) {
                 if ($maxVotes == $this->votesNo) $this->value = 0;
                 else if ($maxVotes == $this->votesYes) $this->value = 1;
                 else if ($maxVotes == $this->votesUnknown) $this->value = 2;

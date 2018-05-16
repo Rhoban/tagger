@@ -4,7 +4,7 @@
 
 The tagger is a tool allowing you to upload several patches (small images) and tag them under some categories in order to train neural networks
 
-![tagger.png](tagger.png)
+![imgs/tagger.png](imgs/tagger.png)
 
 ## Installing
 
@@ -94,6 +94,34 @@ robot1/
 Will result in having two sequences, one named `robot1_17h59` containing patches for `goal<` category and patches for `ball` category, and one named `>robot1_18h05` containing patches for `goal` category.
 
 *Note: if you want to have the progress bar to work, you have to enable the `session.upload_progress.enabled` in the PHP configuration*
+
+### Tagging
+
+When tagging, a grid of images is presented to you:
+
+![imgs/grid.png](imgs/grid.png)
+
+Images you don't click will be registered as negative for the current category. With one click, you mark the images as positive for the class. With two click, you mark it as unknown which means that you don't want it to be used for training because it's ambiguous (for instance, if you have images that will not appear in real situations):
+
+![imgs/grid_tagged.png](imgs/grid_tagged.png)
+
+You can then click OK and tag the next grid.
+
+*Note: you can choose the size of the images and the grid in "My settings", this can be handful to adapt the size of the grid to your screen or the device you are currently using*
+
+### Consensus
+
+To have images actually accepted in one category, you need it to have consensus, which mean that:
+
+* At least `CONSENSUS_MIN_USERS` tagged it, default is 2
+* There is one class (yes, no or unknown) accepted by a ratio higher than `CONSENSUS_THRESHOLD`, default is 0.6 (60%)
+
+You can change these values by putting it in your `.env` file, for example:
+
+    CONSENSUS_MIN_USERS=1
+    CONSENSUS_THRESHOLD=0.6
+
+Will make that one user alone will be able to trigger a consensu, and
 
 ### Training
 
