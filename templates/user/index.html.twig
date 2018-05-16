@@ -41,6 +41,8 @@
                     <a class="btn btn-danger" onclick="return confirm('Delete tags ?')" href="{{ path('user_untag', {'id': user.id}) }}">
                         Remove tags
                     </a>
+
+                    {{ include('user/_delete_form.html.twig') }}
                 </td>
             </tr>
         {% else %}

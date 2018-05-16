@@ -154,6 +154,10 @@ class UserController extends Controller
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
             $em = $this->getDoctrine()->getManager();
+            foreach ($user->getTags() as $tag) {
+                $tag->cancel();
+                $em->remove($tag);
+            }
             $em->remove($user);
             $em->flush();
         }
