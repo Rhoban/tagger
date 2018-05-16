@@ -138,3 +138,7 @@ To achieve this:
 * You can, if you want, disable these sessions so they are not in the standard tag process (and let the training flag)
 
 *Notes: admin doesn't need to be trained, it is also possible to manually mark someone as trained in the administration of users.*
+
+## LICENSE
+
+This is under MIT license. Please refer to the `LICENSE` file for more information
