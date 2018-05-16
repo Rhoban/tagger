@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\Category;
 
 /**
@@ -29,11 +30,13 @@ class User extends BaseUser
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(min=1, max=10)
      */
     private $patchesCol;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(min=1, max=10)
      */
     private $patchesRow;
 
@@ -116,8 +119,8 @@ class User extends BaseUser
 
     public function patchesMatrix()
     {
-        $col = min(8, max(1, $this->getPatchesCol()));
-        $row = min(8, max(1, $this->getPatchesRow()));
+        $col = min(10, max(1, $this->getPatchesCol()));
+        $row = min(10, max(1, $this->getPatchesRow()));
 
         return [$col, $row];
     }
