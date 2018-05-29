@@ -15,7 +15,7 @@ function displayPatches()
         patch[2] = 0;
         html += '<div rel="'+k+'" class="patch-container patch-container-'+patch[0]+'">';
         html += '<div class="patch-info patch-info-'+k+'"></div>';
-        html += '<img rel="'+k+'" class="patch" width="'+patches_size+'" height="'+patches_size+'" src="'+patch[1]+'" />';
+        html += '<img rel="'+k+'" class="patch" style="width:'+patches_size+'px; height:auto" src="'+patch[1]+'" />';
         html += '</div>';
     }
     html += '</div>';
