@@ -28,6 +28,9 @@
                     <a class="btn btn-warning" href="{{ path('category_download', {'id': category.id}) }}">
                         Download
                     </a>
+                    <a class="btn btn-secondary" href="{{ path('category_show_link', {'id': category.id}) }}">
+                        Get link
+                    </a>
                     <a class="btn btn-primary" href="{{ path('category_show', {'id': category.id}) }}">Show</a>
                     <a class="btn btn-info" href="{{ path('category_edit', {'id': category.id}) }}">Edit</a>
                     {{ include('category/_delete_form.html.twig') }}
