@@ -56,9 +56,9 @@ class SequenceController extends Controller
     }
 
     /**
-     * @Route("{id}/show/{consensus}", name="sequence_show", methods="GET")
+     * @Route("{id}/show/{consensus}/{display}", name="sequence_show", methods="GET")
      */
-    public function show(Sequence $sequence, PatchRepository $patches, CategoryRepository $categories, $consensus = 1): Response
+    public function show(Sequence $sequence, PatchRepository $patches, CategoryRepository $categories, $consensus = 0, $display = ''): Response
     {
         $patchesInfo = [];
         foreach ($categories->findAll() as $category) {
@@ -69,7 +69,8 @@ class SequenceController extends Controller
         return $this->render('sequence/show.html.twig', [
             'sequence' => $sequence,
             'patches' => $patchesInfo,
-            'consensus' => $consensus
+            'consensus' => $consensus,
+            'display' => $display
         ]);
     }
 

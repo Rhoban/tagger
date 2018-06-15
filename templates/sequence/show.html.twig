@@ -12,9 +12,9 @@
 
 {% block body %}
     {% if consensus %}
-        <a class="btn btn-primary float-right" href="{{ path('sequence_show', {'id': sequence.id, 'consensus': 0}) }}">Show all</a>
+        <a class="btn btn-primary float-right" href="{{ path('sequence_show', {'id': sequence.id, 'consensus': 0, 'display': display}) }}">Show all</a>
     {% else %}
-        <a class="btn btn-primary float-right" href="{{ path('sequence_show', {'id': sequence.id, 'consensus': 1}) }}">Only with consensus</a>
+        <a class="btn btn-primary float-right" href="{{ path('sequence_show', {'id': sequence.id, 'consensus': 1, 'display': display}) }}">Only with consensus</a>
     {% endif %}
 
     <h1>Sequence "{{ sequence }}"</h1>
@@ -46,7 +46,11 @@
             {{ patchesInfo.count }} patches for category "{{ category }}"
             <a href="{{ path('sequence_delete_category', {categoryName: category, session: sequence.session.id, sequence: sequence.id}) }}" onclick="return confirm('Are you sure?')" class="confirm float-right btn btn-danger">Remove</a>
         </h3>
-        {% include 'patchesInfo.html.twig' %}
+        {% if display == category %}
+            {% include 'patchesInfo.html.twig' %}
+        {% else %}
+            <a class="btn btn-success" href="{{ path('sequence_show', {'id': sequence.id, 'consensus': consensus, 'display': category}) }}">Display</a>
+        {% endif %}
     </div>
     {% endfor %}
 
