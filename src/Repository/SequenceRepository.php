@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Session;
 use App\Entity\Sequence;
+use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -100,6 +101,36 @@ class SequenceRepository extends ServiceEntityRepository
         foreach ($deletes as $delete) {
             $stmt = $em->getConnection()->prepare($delete);
             $stmt->execute(['sequence' => $sequence->getId()]);
+        }
+    }
+    
+    public function deleteForCategory(Sequence $sequence, Category $category)
+    {
+        $em = $this->getEntityManager();
+
+        $deletes = [
+            // Removing the tags
+            "DELETE tag
+            FROM tag
+            JOIN patch ON tag.patch_id = patch.id
+            WHERE patch.sequence_id = :sequence
+            AND patch.category_id = :category
+            ",
+
+            // Removing the patches
+            "DELETE patch
+            FROM patch
+            WHERE patch.sequence_id = :sequence
+            AND patch.category_id = :category
+            "
+        ];
+
+        foreach ($deletes as $delete) {
+            $stmt = $em->getConnection()->prepare($delete);
+            $stmt->execute([
+                'sequence' => $sequence->getId(),
+                'category' => $category->getId()
+            ]);
         }
     }
 }

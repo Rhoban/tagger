@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Sequence;
+use App\Entity\Category;
 use App\Entity\Session;
 use App\Form\SequenceType;
 use App\Repository\PatchRepository;
@@ -97,7 +98,7 @@ class SequenceController extends Controller
      */
     public function delete(Request $request, Session $session, Sequence $sequence): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$sequence->getId(),        $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$sequence->getId(), $request->request->get('_token'))) {
             $sequence->unlinkPatches();
             $em = $this->getDoctrine()->getManager();
             $em->flush();
@@ -108,6 +109,23 @@ class SequenceController extends Controller
 
         return $this->redirectToRoute('sequence_index', [
             'session' => $session->getId()
+        ]);
+    }
+    
+    /**
+     * @Route("/deleteForCategory/{categoryName}/{session}/{sequence}", name="sequence_delete_category", methods="GET")
+     */
+    public function deleteForCategory(Request $request, Session $session, Sequence $sequence, $categoryName, SequenceRepository $repository, CategoryRepository $categoryRepository): Response
+    {
+        $category = $categoryRepository->findOneBy(['name' => $categoryName]);
+        
+        if ($category instanceof Category) {
+            $sequence->unlinkPatches($category);
+            $repository->deleteForCategory($sequence, $category);
+        }
+
+        return $this->redirectToRoute('sequence_show', [
+            'id' => $sequence->getId()
         ]);
     }
 

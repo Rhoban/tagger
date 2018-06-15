@@ -127,10 +127,12 @@ class Sequence
         return $this;
     }
 
-    public function unlinkPatches()
+    public function unlinkPatches(?Category $category=null)
     {
         foreach ($this->getPatches() as $patch) {
-            @unlink($patch->getFullFilename());
+            if ($category == null || $patch->getCategory() == $category) {
+                @unlink($patch->getFullFilename());
+            }
         }
     }
 

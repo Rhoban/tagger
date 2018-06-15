@@ -42,8 +42,12 @@
     {% for category, patchesInfo in patches %}
     <hr/>
     <div>
-    <h3>{{ patchesInfo.count }} patches for category "{{ category }}"</h3>
+        <h3>
+            {{ patchesInfo.count }} patches for category "{{ category }}"
+            <a href="{{ path('sequence_delete_category', {categoryName: category, session: sequence.session.id, sequence: sequence.id}) }}" onclick="return confirm('Are you sure?')" class="confirm float-right btn btn-danger">Remove</a>
+        </h3>
         {% include 'patchesInfo.html.twig' %}
+    </div>
     {% endfor %}
 
     <hr/>
