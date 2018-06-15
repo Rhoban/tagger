@@ -53,7 +53,7 @@ class UserRepository extends ServiceEntityRepository
 
             FROM users
             ORDER BY score DESC
-            LIMIT 25
+            LIMIT 50
             '
         );
         $stmt->execute();
