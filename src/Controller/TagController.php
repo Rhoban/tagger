@@ -135,6 +135,7 @@ class TagController extends Controller
         }
 
         return new JsonResponse([
+            (int)$patches->getPatchesToTag(null, $category, 0, true),
             (int)$patches->getPatchesToTag($this->getUser(), $category, 0, true),
             (int)$patches->getPatchesToTag($this->getUser(), $category, 0, true, true),
             (int)$patches->getPatchesToTag(null, $category, 0, true, true),
@@ -204,6 +205,7 @@ class TagController extends Controller
         $em->flush();
 
         return new JsonResponse([
+            (int)$patches->getPatchesToTag(null, $category, 0, true),
             (int)$patches->getPatchesToTag($this->getUser(), $category, 0, true),
             (int)$patches->getPatchesToTag($this->getUser(), $category, 0, true, true),
             (int)$patches->getPatchesToTag(null, $category, 0, true, true),

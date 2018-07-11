@@ -1,6 +1,6 @@
 
 $(document).ready(function() {
-    $('.mini-patch').click(function() {
+    $('.mini-patch-consensus').click(function() {
         if (confirm('Untag this?')) {
             var id = $(this).attr('rel');
             var div = $(this);

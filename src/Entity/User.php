@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\Category;
 
 /**
@@ -29,11 +30,13 @@ class User extends BaseUser
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(min=1, max=10)
      */
     private $patchesCol;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(min=1, max=10)
      */
     private $patchesRow;
 
@@ -49,6 +52,7 @@ class User extends BaseUser
         $this->tags = new ArrayCollection();
         $this->patchesCol = 4;
         $this->patchesRow = 4;
+        $this->patchesSize = 128;
         $this->acceptNotifications = true;
         $this->trainings = new ArrayCollection();
         $this->unsuscribeToken = uniqid('', true);
@@ -116,8 +120,8 @@ class User extends BaseUser
 
     public function patchesMatrix()
     {
-        $col = min(8, max(1, $this->getPatchesCol()));
-        $row = min(8, max(1, $this->getPatchesRow()));
+        $col = min(10, max(1, $this->getPatchesCol()));
+        $row = min(10, max(1, $this->getPatchesRow()));
 
         return [$col, $row];
     }
@@ -159,6 +163,14 @@ class User extends BaseUser
 
     public function isTrainedFor(Category $category): bool
     {
+        if (!getenv('TRAINING')) {
+            return true;
+        }
+
+        if ($this->isAdmin()) {
+            return true;
+        }
+
         $training = $this->trainingFor($category);
 
         if ($training) {
@@ -222,6 +234,12 @@ class User extends BaseUser
      */
     private $unsuscribeToken;
 
+    /**
+     * @ORM\Column(type="integer")
+     * @Assert\Range(min=32, max=1024)
+     */
+    private $patchesSize;
+
     public function getAcceptNotifications(): ?bool
     {
         return $this->acceptNotifications;
@@ -242,6 +260,18 @@ class User extends BaseUser
     public function setUnsuscribeToken(string $unsuscribeToken): self
     {
         $this->unsuscribeToken = $unsuscribeToken;
+
+        return $this;
+    }
+
+    public function getPatchesSize(): ?int
+    {
+        return $this->patchesSize;
+    }
+
+    public function setPatchesSize(int $patchesSize): self
+    {
+        $this->patchesSize = $patchesSize;
 
         return $this;
     }

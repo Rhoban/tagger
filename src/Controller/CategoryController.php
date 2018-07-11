@@ -99,11 +99,8 @@ class CategoryController extends Controller
 
         return $this->redirectToRoute('category_index');
     }
-
-    /**
-     * @Route("/download/{id}", name="category_download")
-     */
-    public function download(Category $category, Request $request, PatchRepository $patches): Response
+    
+    public function getZip(Category $category, Request $request, PatchRepository $patches)
     {
         $infos = $patches->getPatchesInfos($category, null, true);
         $name = uniqid('', true);
@@ -111,22 +108,41 @@ class CategoryController extends Controller
         $zip = new \ZipArchive;
         $zip->open(WEB_DIRECTORY.$zipName, \ZipArchive::CREATE);
         $json = [];
-
+        
         foreach ($infos['patches']['yes'] as $patch) {
             $targetName = basename($patch['filename']);
             $json[] = $targetName;
             $zip->addFile(WEB_DIRECTORY.'/'.$patch['filename'], $targetName);
         }
-
+        
         foreach ($infos['patches']['no'] as $patch) {
             $targetName = basename($patch['filename']);
             $zip->addFile(WEB_DIRECTORY.'/'.$patch['filename'], $targetName);
         }
-
+        
         $zip->addFromString('data.json', json_encode($json));
-
+        
         $zip->close();
+        
+        return $request->getUriForPath($zipName);
+    }
 
-        return new RedirectResponse($request->getUriForPath($zipName));
+    /**
+     * @Route("/download/{id}", name="category_download")
+     */
+    public function download(Category $category, Request $request, PatchRepository $patches): Response
+    {
+        return new RedirectResponse($this->getZip($category, $request, $patches));
+    }
+    
+    /**
+     * @Route("/showLink/{id}", name="category_show_link")
+     */
+    public function showLink(Category $category, Request $request, PatchRepository $patches): Response
+    {
+        return $this->render('category/showLink.html.twig', [
+            'category' => $category,
+            'url' => $this->getZip($category, $request, $patches)
+        ]);
     }
 }

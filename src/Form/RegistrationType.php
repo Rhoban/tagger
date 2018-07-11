@@ -3,12 +3,15 @@
 namespace App\Form;
 
 use FOS\UserBundle\Form\Type\ProfileFormType;
+use FOS\UserBundle\Form\Type\RegistrationFormType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+    use Gregwar\CaptchaBundle\Type\CaptchaType;
 
 use App\Entity\User;
 
-class ProfileType extends ProfileFormType
+class RegistrationType extends RegistrationFormType
 {
     public function __construct()
     {
@@ -17,16 +20,14 @@ class ProfileType extends ProfileFormType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('username');
-        $builder->add('email');
-        $builder->add('patchesCol');
-        $builder->add('patchesRow');
-        $builder->add('patchesSize');
-        $builder->add('acceptNotifications');
+        parent::buildForm($builder, $options);
+
+        $builder->add('captcha', CaptchaType::class);
+
     }
 
     public function getName()
     {
-        return 'app_user_profile';
+        return 'app_registration_type';
     }
 }

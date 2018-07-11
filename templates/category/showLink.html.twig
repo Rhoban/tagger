@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Categories{% endblock %}
+
+{% block body %}
+    <h1>Download link</h1>
+    
+    <p>
+        Patches for category <kbd>{{ category }}</kbd> can be downloaded via the following link:
+    </p>
+
+    <big><pre class="tree"><code>{{ url }}</code></pre></big>
+{% endblock %}

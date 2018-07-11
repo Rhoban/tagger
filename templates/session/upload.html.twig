@@ -53,6 +53,37 @@
     {{ form_end(form) }}
 </div>
 
+<div class="alert alert-info">
+    <h3>Archive format</h3>
+
+The archive can have any structure, as long as it ends with directories with categories names, like:
+
+<pre class="tree"><code>robot1/
+    17h59/
+        goal/
+            1.png
+            2.png
+            3.png
+        ball/
+            1.png
+            2.png
+            3.png
+    18h05
+        goal/
+            1.png
+            2.png
+            3.png</code></pre>
+
+<p>
+    Will result in having two sequences, one named <kbd>robot1_17h59</kbd> containing patches for <kbd>goal</kbd> category and patches for <kbd>ball</kbd> category, and one named <kbd>robot1_18h05</kbd> containing patches for <kbd>goal</kbd> category.
+</p>
+
+<p>
+    The <kbd>goal</kbd> and <kbd>ball</kbd> categories must exists before uploading this.
+</p>
+</div>
+<hr/>
+
 <script>
     var session_upload_progress = "{{ path('session_upload_progress', {'token': token}) }}";
 </script>

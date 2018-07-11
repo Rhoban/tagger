@@ -32,9 +32,9 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/unsuscribe/{user}/{token}", name="unsuscribe")
+     * @Route("/unsubscribe/{user}/{token}", name="unsubscribe")
      */
-    public function unsuscribe(User $user, string $token)
+    public function unsubscribe(User $user, string $token)
     {
         $ok = false;
 

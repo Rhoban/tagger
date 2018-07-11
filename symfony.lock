@@ -77,6 +77,12 @@
     "friendsofsymfony/user-bundle": {
         "version": "v2.1.2"
     },
+    "gregwar/captcha": {
+        "version": "v1.1.6"
+    },
+    "gregwar/captcha-bundle": {
+        "version": "v2.0.4"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },

@@ -7,7 +7,7 @@ function displayPatches()
 {
     // Genrating the HTML for the tag zone
     var html = '';
-    var w = (128+6)*(patches_col);
+    var w = (patches_size+6)*(patches_col);
 
     html += '<div class="patches noselect" style="max-width:'+(w)+'px">';
     for (var k in patches) {
@@ -15,7 +15,7 @@ function displayPatches()
         patch[2] = 0;
         html += '<div rel="'+k+'" class="patch-container patch-container-'+patch[0]+'">';
         html += '<div class="patch-info patch-info-'+k+'"></div>';
-        html += '<img rel="'+k+'" class="patch" width="128" height="128" src="'+patch[1]+'" />';
+        html += '<img rel="'+k+'" class="patch" style="width:'+patches_size+'px; height:auto" src="'+patch[1]+'" />';
         html += '</div>';
     }
     html += '</div>';
@@ -42,6 +42,12 @@ function displayPatches()
             break;
         }
     });
+
+    var scale = patches_size/128.0;
+    var margin = 8*scale;
+    $('.patch-info').css('margin-left', margin+'px');
+    $('.patch-info').css('margin-top', margin+'px');
+    $('.patch-info').css('transform', 'scale('+scale+')');
 }
 
 function updateProgress()
@@ -169,10 +175,11 @@ $(document).ready(function() {
                     updatePatches();
 
                     // Updating statistics and progress bar
-                    to_tag_user = json[0];
-                    to_tag_user_no_consensus = json[1];
-                    to_tag_team = json[2];
-                    to_cancel = json[3];
+                    to_tag = json[0];
+                    to_tag_user = json[1];
+                    to_tag_user_no_consensus = json[2];
+                    to_tag_team = json[3];
+                    to_cancel = json[4];
                     updateProgress();
                 });
             }
@@ -185,9 +192,10 @@ $(document).ready(function() {
         $('.tag-cancel').click(function() {
             $.post(cancel_url, {'tags': to_cancel}, function(json) {
                 to_cancel = null;
-                to_tag_user = json[0];
-                to_tag_user_no_consensus = json[1];
-                to_tag_team = json[2];
+                to_tag = json[0];
+                to_tag_user = json[1];
+                to_tag_user_no_consensus = json[2];
+                to_tag_team = json[3];
                 updateProgress();
             });
 
